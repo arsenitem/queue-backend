@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package queue_constructor;
+
+import "helpers.proto";
+
+// Queue
+message Queue {
+    // `PublicKey`
+    exonum.PublicKey key = 1;
+    // 
+    string name = 2;
+}
+message AttributesInQueue {
+    exonum.PublicKey key = 1;
+    exonum.PublicKey QueueKey = 2;
+    string name = 3;
+    string type = 4;
+    string order = 5;
+    uint64 priority = 6;
+    uint32 required = 7;
+    bool priorityInOrder = 8;
+    uint64 coefficient = 9;
+}
+message ProfileAttributes {
+    exonum.PublicKey  key = 1;
+    exonum.PublicKey  profile_key = 2;
+    exonum.PublicKey  attribute = 3;
+    string  value = 4;
+}
+//participant anceta
+message Profile {
+    //pk
+    exonum.PublicKey key = 1;
+
+    //pk user
+    exonum.PublicKey user_key = 2;
+
+    exonum.PublicKey queue_key = 3;
+
+    uint64 rating = 5;
+}
+
+// System user
+message User {
+    // `PublicKey`
+    exonum.PublicKey key = 1;
+    // Timestamp
+    string name = 2;
+}
+message CreateUser {
+    string name = 1;
+}
+message CreateQueue {
+    string name = 2;
+}
+message CreateQueue {
+    string name = 2;
+}
+message CreateProfile {
+    exonum.PublicKey user_key = 1;
+
+    exonum.PublicKey queue_key = 2;
+
+}
