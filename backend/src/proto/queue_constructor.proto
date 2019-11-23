@@ -1,32 +1,53 @@
 syntax = "proto3";
 
-package queue_constructor;
+package iphone_queue;
 
 import "helpers.proto";
 
-// Queue
+// System user
+message User {
+    // `PublicKey`
+    
+    // Timestamp
+    string name = 2;
+}
+message CreateUser {
+    string name = 1;
+}
+///
 message Queue {
     // `PublicKey`
     exonum.PublicKey key = 1;
     // 
     string name = 2;
 }
+
+///
+message CreateQueue {
+    ///
+    string name = 1;
+}
+
 message AttributesInQueue {
     exonum.PublicKey key = 1;
-    exonum.PublicKey QueueKey = 2;
+    exonum.PublicKey queueKey = 2;
     string name = 3;
-    string type = 4;
+    string attr_type = 4;
     string order = 5;
     uint64 priority = 6;
     uint32 required = 7;
     bool priorityInOrder = 8;
     uint64 coefficient = 9;
 }
-message ProfileAttributeValue {
-    exonum.PublicKey key = 1;
-    exonum.PublicKey attribute_key = 2;
-    exonum.PublicKey  profile_key = 3;
-    string  value = 4;
+message AddAttributesToQueue {
+    exonum.PublicKey queueKey = 1;
+    string name = 2;
+    string attr_type = 3;
+    string order = 4;
+    uint64 priority = 5;
+    uint32 required = 6;
+    bool priorityInOrder = 7;
+    uint64 coefficient = 8;
 }
 //participant anceta
 message Profile {
@@ -40,34 +61,9 @@ message Profile {
 
     uint64 rating = 5;
 }
-
-// System user
-message User {
-    // `PublicKey`
+message ProfileAttributeValue {
     exonum.PublicKey key = 1;
-    // Timestamp
-    string name = 2;
-}
-message CreateUser {
-    exonum.PublicKey key = 1;
-    string name = 2;
-}
-message CreateQueue {
-    string name = 1;
-}
-message CreateProfile {
-    exonum.PublicKey user_key = 1;
-
-    exonum.PublicKey queue_key = 2;
-
-}
-message AddAttributesToQueue {
-    exonum.PublicKey QueueKey = 1;
-    string name = 2;
-    string type = 3;
-    string order = 4;
-    uint64 priority = 5;
-    uint32 required = 6;
-    bool priorityInOrder = 7;
-    uint64 coefficient = 8;
+    exonum.PublicKey attribute_key = 2;
+    exonum.PublicKey  profile_key = 3;
+    string  value = 4;
 }

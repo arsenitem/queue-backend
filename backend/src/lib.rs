@@ -7,7 +7,6 @@
     bare_trait_objects
 )]
 
-extern crate exonum;
 #[macro_use]
 extern crate exonum_derive;
 #[macro_use]

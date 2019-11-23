@@ -27,16 +27,18 @@ pub struct Queue_fields {
     pub queue_key: PublicKey,
     /// Name of the field.
     pub name: String,   
-    /// field
-    pub type: u32;    
+    /// type    
+    pub type: String,  
     /// order
-    pub order: u32;
+    pub order: String,
     //priority 
-    pub priority: u32;
+    pub priority: u64,
     ///priority vector
-    pub priority_vector: bool,
+    pub priorityInOrder: bool,
     /// coefficient
-    pub coefficient: u32;
+    pub coefficient: u64;
+    ///required or not
+    pub required: u32,
     /// `Hash` of the transactions history.    
     //pub history_hash: Hash,
     ///Json string
@@ -51,7 +53,7 @@ pub struct Queue_fields {
     //pub history_len: u64,
 }
 
-impl Queue_fields {
+impl Queue_attributes {
     /// Create new queue.
     pub fn new(
         &queue_key: &PublicKey,        
