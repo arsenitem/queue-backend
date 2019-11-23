@@ -29,9 +29,8 @@ where
     pub fn new(view: T) -> Self {
         Schema { view }
     }
-
-    /// Returns `ProofMapIndex` with pipe types.
-    pub fn queues(&self) -> ProofMapIndex<T, PublicKey, Queue> {
+     /// Returns `ProofMapIndex` with pipe types.
+     pub fn queues(&self) -> ProofMapIndex<T, PublicKey, Queue> {
         ProofMapIndex::new(Queues_TYPES_TABLE, self.view.clone())
     }
 
@@ -44,26 +43,23 @@ where
     pub fn queue(&self, pub_key: &PublicKey) -> Option<Queue> {
         self.queues().get(pub_key)
     }
-
     /// Returns the state hash of service.
     pub fn state_hash(&self) -> Vec<Hash> {
         vec![self.queues().object_hash()]
     }
-
-    /// Create new participant and append first record to its history.
-    pub fn add_queue(
+     /// Create new Queue and append first record to its history.
+     pub fn add_queue(
         &mut self,
         key: &PublicKey,
-        name: string
+        name: &String
     ) {
         let created_queue = {
           
             Queue::new(
                 key,
-                name
+                &name
             )
         };
-        self.queus().put(key, created_queue);
+        self.queues().put(key, created_queue);
     }
-   
 }

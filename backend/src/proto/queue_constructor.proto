@@ -1,16 +1,33 @@
 syntax = "proto3";
 
-package queue_constructor;
+package iphone_queue;
 
 import "helpers.proto";
 
-// Queue
+// System user
+message User {
+    // `PublicKey`
+    exonum.PublicKey key = 1;
+    // Timestamp
+    string name = 2;
+}
+message CreateUser {
+    string name = 1;
+}
+///
 message Queue {
     // `PublicKey`
     exonum.PublicKey key = 1;
     // 
     string name = 2;
 }
+
+///
+message CreateQueue {
+    exonum.PublicKey key = 1;
+    string name = 2;
+}
+
 message AttributesInQueue {
     exonum.PublicKey key = 1;
     exonum.PublicKey QueueKey = 2;
@@ -22,11 +39,14 @@ message AttributesInQueue {
     bool priorityInOrder = 8;
     uint64 coefficient = 9;
 }
-message ProfileAttributeValue {
-    exonum.PublicKey key = 1;
-    exonum.PublicKey attribute_key = 2;
-    exonum.PublicKey  profile_key = 3;
-    string  value = 4;
+message AddAttributesToQueue {
+    string name = 1;
+    string type = 2;
+    string order = 3;
+    uint64 priority = 4;
+    uint32 required = 5;
+    bool priorityInOrder = 6;
+    uint64 coefficient = 7;
 }
 //participant anceta
 message Profile {
@@ -40,35 +60,9 @@ message Profile {
 
     uint64 rating = 5;
 }
-
-// System user
-message User {
-    // `PublicKey`
+message ProfileAttributeValue {
     exonum.PublicKey key = 1;
-    // Timestamp
-    string name = 2;
-}
-message CreateUser {
-    exonum.PublicKey key = 1;
-    string name = 2;
-}
-message CreateQueue {
-    exonum.PublicKey key = 1;
-    string name = 2;
-}
-message CreateProfile {
-    exonum.PublicKey user_key = 1;
-
-    exonum.PublicKey queue_key = 2;
-
-}
-message AddAttributesToQueue {
-    exonum.PublicKey QueueKey = 1;
-    string name = 2;
-    string type = 3;
-    string order = 4;
-    uint64 priority = 5;
-    uint32 required = 6;
-    bool priorityInOrder = 7;
-    uint64 coefficient = 8;
+    exonum.PublicKey attribute_key = 2;
+    exonum.PublicKey  profile_key = 3;
+    string  value = 4;
 }
