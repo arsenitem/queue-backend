@@ -86,9 +86,9 @@ where
         QueueKey: PublicKey,
         name: String,
         typeAttribute:String,
-        order:String,
-        sortable:u64,
-        obligatory:u32,
+        order:u64,
+        sortable:bool,
+        obligatory:bool,
         priorityInOrder:bool,
         coefficient:u64,
     )  {
