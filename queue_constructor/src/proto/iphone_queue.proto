@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package iphone_queue;
+
+import "helpers.proto";
+
+// System user
+message User {
+    // `PublicKey`
+    exonum.PublicKey key = 1;
+    // Timestamp
+    string name = 2;
+}
+message CreateUser {
+    exonum.PublicKey key = 1;
+    string name = 2;
+}
+///
+message Queue {
+    // `PublicKey`
+    exonum.PublicKey key = 1;
+    // 
+    string name = 2;
+}
+
+///
+message CreateQueue {
+    exonum.PublicKey key = 1;
+    string name = 2;
+}
+
+message AttributesInQueue {
+    exonum.PublicKey key = 1;
+    exonum.PublicKey QueueKey = 2;
+    string name = 3;
+    string type = 4;
+    string order = 5;
+    uint64 priority = 6;
+    uint32 required = 7;
+    bool priorityInOrder = 8;
+    uint64 coefficient = 9;
+}
+message AddAttributesToQueue {
+    exonum.PublicKey QueueKey = 1;
+    string name = 2;
+    string type = 3;
+    string order = 4;
+    uint64 priority = 5;
+    uint32 required = 6;
+    bool priorityInOrder = 7;
+    uint64 coefficient = 8;
+}
+//participant anceta
+message Profile {
+    //pk
+    exonum.PublicKey key = 1;
+
+    //pk user
+    exonum.PublicKey user_key = 2;
+
+    exonum.PublicKey queue_key = 3;
+
+    uint64 rating = 5;
+}
+message ProfileAttributeValue {
+    exonum.PublicKey key = 1;
+    exonum.PublicKey attribute_key = 2;
+    exonum.PublicKey  profile_key = 3;
+    string  value = 4;
+}
