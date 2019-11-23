@@ -54,9 +54,7 @@ impl From<Error> for ExecutionError {
 #[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
 #[exonum(pb = "proto::CreateQueue")]
 pub struct CreateQueue {
-    /// `PublicKey` of participant.
-    
-    /// ads
+      /// ads
     pub name: String,
 }
 /// Transaction group.
