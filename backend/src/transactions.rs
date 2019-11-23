@@ -80,16 +80,24 @@ pub enum ParticipantTransactions {
 impl CreateQueue {
     #[doc(hidden)]
     pub fn sign(
+<<<<<<< HEAD
+        pk: &PublicKey,       
+        name: String,
+        sk: &SecretKey,
+    ) -> Signed<RawTransaction> {
+        Message::sign_transaction(Self { name }, SERVICE_ID, *pk, sk)
+=======
         pk: &PublicKey,
         name: String,
         sk: &SecretKey,
     ) -> Signed<RawTransaction> {
         Message::sign_transaction(Self {name }, SERVICE_ID, *pk, sk)
+>>>>>>> master
     }
 }
 impl Transaction for CreateQueue {
     fn execute(&self, context: TransactionContext) -> ExecutionResult {
-        let hash = context.tx_hash();
+        
     
         let mut schema = Schema::new(context.fork());
 
