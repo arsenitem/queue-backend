@@ -78,6 +78,16 @@ pub struct Get_a_prize {
     pub key: PublicKey,
 }
 
+/// Get a prize
+#[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
+#[exonum(pb = "proto::CreateQueue")]
+pub struct CreateQueue {
+    /// `PublicKey` of participant.
+    pub key: PublicKey,
+     
+    pub name: String,
+}
+
 
 /// Transaction group.
 #[derive(Serialize, Deserialize, Clone, Debug, TransactionSet)]
@@ -88,6 +98,7 @@ pub enum ParticipantTransactions {
     Take_part(Take_part),
     /// Get a prize
     Get_a_prize(Get_a_prize),
+    CreateQueue(CreateQueue)
    
 }
 
@@ -190,4 +201,23 @@ impl Transaction for Win_a_prize {
         }
     }
 }
+impl Transaction for CreateQueue {
+    fn execute(&self, context: TransactionContext) -> ExecutionResult {
+        let hash = context.tx_hash();
+    
+        let mut schema = Schema::new(context.fork());
 
+        let key = &self.key;
+
+        if schema.queue(key).is_none() {
+            let name = self.name;
+
+            schema.add_queue(key, name);
+
+            Ok(())
+        } else {
+            Err(Error::ParticipantAlreadyExists)?
+        }
+     
+    }
+}
