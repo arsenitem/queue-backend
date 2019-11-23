@@ -37,7 +37,8 @@
                                 </tbody>
                             </table>
                         </div>
-                        <a class="waves-effect waves-light btn" v-on:click="transactionHello" id="createCustomModalButton"><i class="material-icons left">add_circle_outline</i>Добавить параметр</a>
+                        <a class="waves-effect waves-light btn" v-on:click="transactionHello" ><i class="material-icons left">add_circle_outline</i>Затестить ноду</a>
+                        <a class="waves-effect waves-light btn" v-on:click="createCustomModal" ><i class="material-icons left">add_circle_outline</i>Добавить параметр</a>
                         <a class="waves-effect waves-light btn" onclick="buildParameters()"><i class="material-icons left">play_circle_filled</i>Создать очередь</a>
                     </form>
                 </div>               
@@ -52,13 +53,14 @@
     import axios from 'axios'
     import * as proto from '../../proto/stubs.js'
 
-    const TRANSACTION_URL = '/api/explorer/v1/transactions'
-    const PER_PAGE = 10
-    const SERVICE_ID = 128
-    const TX_TRANSFER_ID = 0
-    const TX_ISSUE_ID = 1
-    const TX_WALLET_ID = 2
-    const TABLE_INDEX = 0
+    const TRANSACTION_URL = '/api/explorer/v1/transactions';
+    const PER_PAGE = 10;
+    const SERVICE_ID = 128;
+    const TX_TRANSFER_ID = 0;
+    const TX_ISSUE_ID = 1;
+    const TX_WALLET_ID = 2;
+    const TABLE_INDEX = 0;
+
     function CreateTransaction(publicKey) {
         return Exonum.newTransaction({
             author: publicKey,
@@ -67,20 +69,53 @@
             schema: proto.queue_constructor.CreateQueue
         })
     }
+
+    function fillModalContentParameters () {
+        let string = '<div class="input-field col s12">'
+            +'<select onclick="renderParametr()" id="selectParametrs">'
+                +'<option value="" disabled selected>Не выбрано</option>'
+                +'<option value="1">Логическое (да/нет)</option>'
+                +'<option value="2">Текстовое</option>'
+                +'<option value="3">Числовое</option>'
+                +'<option value="4">Дата</option>'
+            +'</select>'
+            +'<label>Выберите тип параметра</label>'
+        +'</div>'
+        +'<a onclick="renderParameter()" class="waves-effect btn">Выбрать</a>';
+        $('.custom-modal-content').html(string);
+        $('select').formSelect();
+    }
+
     module.exports = {
         methods: {
-            async transactionHello() {
+            transactionHello() {
 
                 // Describe transaction
-                var keyPair = Exonum.keyPair()
-                const transaction = new CreateTransaction(keyPair.publicKey)
+                var keyPair = Exonum.keyPair();
+                const transaction = new CreateTransaction(keyPair.publicKey);
 
                 // Transaction data
                 const data = {
                     name: "Очередь"
-                }
+                };
                 // Send transaction into blockchain
-                return transaction.send(TRANSACTION_URL, data, keyPair.secretKey)
+                return transaction.send(TRANSACTION_URL, data, keyPair.secretKey);
+            },
+            createCustomModal() {
+                let string = '<div id="custom-modal" class="modal">'
+                    +'<div class="modal-content">'
+                        +'<h4>Выбрать тип очереди</h4>'
+                        +'<p class="custom-modal-content"></p>'
+                    +'</div>'
+                    +'<div class="modal-footer">'
+                        +'<a class="modal-close waves-effect waves-green btn-flat">Закрыть</a>'
+                    +'</div>'
+                +'</div>';
+                $(".custom-modals").html(string);
+                let modalobject =  $('#custom-modal');
+                modalobject.modal();
+                modalobject.modal("open");
+                fillModalContentParameters();
             }
         }
     }
@@ -126,41 +161,7 @@ function tableSearch() {
     }
 }
 
-function createCustomModal(header, fillModalContent, isClose = true) {
-    let string = '<div id="custom-modal" class="modal">'
-        +'<div class="modal-content">'
-            +'<h4>'+header+'</h4>'
-            +'<p class="custom-modal-content"></p>'
-        +'</div>'
-        +'<div class="modal-footer">'
-            +function (){
-                let result = isClose == true ? '<a class="modal-close waves-effect waves-green btn-flat">Закрыть</a>' : '';
-                return result;
-            }()
-        +'</div>'
-    +'</div>';
-    $(".custom-modals").html(string);
-    let modalobject =  $('#custom-modal');
-    modalobject.modal();
-    modalobject.modal("open");
-    fillModalContent();
-}
 
-function fillModalContentParameters () {
-    let string = '<div class="input-field col s12">'
-        +'<select onclick="renderParametr()" id="selectParametrs">'
-            +'<option value="" disabled selected>Не выбрано</option>'
-            +'<option value="1">Логическое (да/нет)</option>'
-            +'<option value="2">Текстовое</option>'
-            +'<option value="3">Числовое</option>'
-            +'<option value="4">Дата</option>'
-        +'</select>'
-        +'<label>Выберите тип параметра</label>'
-    +'</div>'
-    +'<a onclick="renderParameter()" class="waves-effect btn">Выбрать</a>';
-    $('.custom-modal-content').html(string);
-    $('select').formSelect();
-}
 
 function renderParameter(){
     let valueParametr = $('#selectParametrs').val(),
