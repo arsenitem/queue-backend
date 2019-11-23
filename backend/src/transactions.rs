@@ -54,8 +54,20 @@ impl From<Error> for ExecutionError {
 #[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
 #[exonum(pb = "proto::CreateQueue")]
 pub struct CreateQueue {
-      /// ads
+    /// ads
     pub name: String,
+}
+///struct
+#[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
+#[exonum(pb = "proto::AddAttributesToQueue")]
+pub struct AddAttributesToQueue {
+    pub name: String;
+    pub type: String;
+    pub order: String;
+    pub priority: uint64;
+    pub required: uint32 ;
+    pub priorityInOrder: uint32 ;
+    pub coefficient: uint32;
 }
 /// Transaction group.
 #[derive(Serialize, Deserialize, Clone, Debug, TransactionSet)]
@@ -68,11 +80,19 @@ pub enum ParticipantTransactions {
 impl CreateQueue {
     #[doc(hidden)]
     pub fn sign(
+<<<<<<< HEAD
         pk: &PublicKey,       
         name: String,
         sk: &SecretKey,
     ) -> Signed<RawTransaction> {
         Message::sign_transaction(Self { name }, SERVICE_ID, *pk, sk)
+=======
+        pk: &PublicKey,
+        name: String,
+        sk: &SecretKey,
+    ) -> Signed<RawTransaction> {
+        Message::sign_transaction(Self {name }, SERVICE_ID, *pk, sk)
+>>>>>>> master
     }
 }
 impl Transaction for CreateQueue {
