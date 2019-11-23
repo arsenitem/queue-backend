@@ -4,64 +4,62 @@ package queue_constructor;
 
 import "helpers.proto";
 
-import "google/protobuf/timestamp.proto";
-
 // Queue
 message Queue {
     // `PublicKey`
     exonum.PublicKey key = 1;
-    
-    //JSON attrs
-    string attributes = 2;
-
-    google.protobuf.Timestamp creation_date = 3;
-
-    google.protobuf.Timestamp open_date = 4;
-
-    google.protobuf.Timestamp close_date = 5;
-
-    string name = 6;
-
-    // history len
-    uint64 history_len = 7;
-    // `Hash` of the transactions history.
-    exonum.Hash history_hash = 8;
-
+    // 
+    string name = 2;
+}
+message AttributesInQueue {
+    exonum.PublicKey key = 1;
+    exonum.PublicKey QueueKey = 2;
+    string name = 3;
+    string type = 4;
+    string order = 5;
+    uint64 priority = 6;
+    uint32 required = 7;
+    bool priorityInOrder = 8;
+    uint64 coefficient = 9;
+}
+message ProfileAttributes {
+    exonum.PublicKey  key = 1;
+    exonum.PublicKey  profile_key = 2;
+    exonum.PublicKey  attribute = 3;
+    string  value = 4;
 }
 //participant anceta
-message Anceta {
+message Profile {
     //pk
     exonum.PublicKey key = 1;
 
-    //pk
-    exonum.PublicKey participant_key = 2;
+    //pk user
+    exonum.PublicKey user_key = 2;
 
-    //user attrs
-    string attributes = 3;
+    exonum.PublicKey queue_key = 3;
 
-    // history len
-    uint64 history_len = 4;
-
-    // `Hash` of the transactions history.
-    exonum.Hash history_hash = 5;
+    uint64 rating = 5;
 }
 
-message Participant {
+// System user
+message User {
     // `PublicKey`
     exonum.PublicKey key = 1;
+    // Timestamp
+    string name = 2;
 }
-// Create queue
-message AddQueue {
-    // `PublicKey` of queue.
-    exonum.PublicKey key = 1;
-    // attrs
-    string attributes = 2;
+message CreateUser {
+    string name = 1;
+}
+message CreateQueue {
+    string name = 2;
+}
+message CreateQueue {
+    string name = 2;
+}
+message CreateProfile {
+    exonum.PublicKey user_key = 1;
 
-    string name = 3;
-}
-message AddAnceta {
-    //pk
-    exonum.PublicKey key = 1;
-    //
-    string attrs = 2;
+    exonum.PublicKey queue_key = 2;
+
 }
