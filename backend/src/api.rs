@@ -31,7 +31,7 @@ impl PublicApi {
 
         Ok(first.name)
     }
-    fn get_queue_properties(state: &ServiceApiState, query: GetFirstQuery) -> api::Result<Vec<String>> {
+    fn get_queue_properties(state: &ServiceApiState, query: GetFirstQuery) -> api::Result<usize> {
         let snapshot = state.snapshot();
         let schema = Schema::new(&snapshot);
 
@@ -41,7 +41,7 @@ impl PublicApi {
             vec.push(val.name);
         }
 
-        Ok(vec)
+        Ok(first.values().count())
     }
     // //get queue by key
     // fn get_all_queus(state: &ServiceApiState, _: GetAllQueues) -> api::Result<String> {
