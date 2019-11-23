@@ -37,9 +37,10 @@
                                 </tbody>
                             </table>
                         </div>
-                        <a class="waves-effect waves-light btn" v-on:click="transactionHello" ><i class="material-icons left">add_circle_outline</i>Затестить ноду</a>
+                        <a class="waves-effect waves-light btn" v-on:click="transactionSaveQueue" ><i class="material-icons left">add_circle_outline</i>Создать очередь</a>
+                        <a class="waves-effect waves-light btn" v-on:click="transactionGetQueue" ><i class="material-icons left">add_circle_outline</i>Вернуть мне очередь по ключу</a>
                         <a class="waves-effect waves-light btn" v-on:click="createCustomModal" ><i class="material-icons left">add_circle_outline</i>Добавить параметр</a>
-                        <a class="waves-effect waves-light btn" onclick="buildParameters()"><i class="material-icons left">play_circle_filled</i>Создать очередь</a>
+                        <a class="waves-effect waves-light btn" v-on:click="buildParameters"><i class="material-icons left">play_circle_filled</i>Создать очередь</a>
                     </form>
                 </div>               
             </div>
@@ -55,40 +56,24 @@
 
     const TRANSACTION_URL = '/api/explorer/v1/transactions';
     const PER_PAGE = 10;
-    const SERVICE_ID = 128;
+    const SERVICE_ID = 10;
     const TX_TRANSFER_ID = 0;
     const TX_ISSUE_ID = 1;
-    const TX_WALLET_ID = 2;
+    const TX_WALLET_ID = 0;
     const TABLE_INDEX = 0;
 
     function CreateTransaction(publicKey) {
         return Exonum.newTransaction({
             author: publicKey,
-            service_id: SERVICE_ID,
-            message_id: TX_WALLET_ID,
+            service_id: 10,
+            message_id: 0,
             schema: proto.queue_constructor.CreateQueue
         })
     }
 
-    function fillModalContentParameters () {
-        let string = '<div class="input-field col s12">'
-            +'<select onclick="renderParametr()" id="selectParametrs">'
-                +'<option value="" disabled selected>Не выбрано</option>'
-                +'<option value="1">Логическое (да/нет)</option>'
-                +'<option value="2">Текстовое</option>'
-                +'<option value="3">Числовое</option>'
-                +'<option value="4">Дата</option>'
-            +'</select>'
-            +'<label>Выберите тип параметра</label>'
-        +'</div>'
-        +'<a onclick="renderParameter()" class="waves-effect btn">Выбрать</a>';
-        $('.custom-modal-content').html(string);
-        $('select').formSelect();
-    }
-
     module.exports = {
         methods: {
-            transactionHello() {
+            transactionSaveQueue() {
 
                 // Describe transaction
                 var keyPair = Exonum.keyPair();
@@ -96,10 +81,31 @@
 
                 // Transaction data
                 const data = {
-                    name: "Очередь"
+                    name: "Очередь 1"
                 };
-                // Send transaction into blockchain
-                return transaction.send(TRANSACTION_URL, data, keyPair.secretKey);
+
+                $("#name_queque").val(keyPair.publicKey);
+                // Send transaction into blockchain        
+                var t = transaction.send(TRANSACTION_URL, data, keyPair.secretKey);
+                t.then(function(value) {
+                        $.ajax({
+                            url: 'http://127.0.0.1:8280'+TRANSACTION_URL,
+                            data: {hash: value},
+                            success: function(result){
+                                if (result.status.type == "success"){
+                                    M.toast({html: 'Очередь сохранена!'});
+                                }                               
+                            }
+                        });
+                    }, function(reason) {
+                    // отказ
+                });
+            },
+            transactionGetQueue (){
+                axios.get('/api/services/queue_constructor/v1/queue_constructor/get_queue?pub_key='+$("#name_queque").val()).then(function(value){
+                    debugger;
+                    M.toast({html: 'Очередь возвращена'});
+                });
             },
             createCustomModal() {
                 let string = '<div id="custom-modal" class="modal">'
@@ -116,8 +122,269 @@
                 modalobject.modal();
                 modalobject.modal("open");
                 fillModalContentParameters();
+            },
+            buildParameters (){
+                if ($("#name_queque").val() != ""){
+                    let parameters = $('#parametersTable>tbody>.parameters'),
+                    arrayObjectParams = [];
+                    // Describe transaction
+                    var keyPairQueue = Exonum.keyPair();
+                    const transaction = new CreateTransaction(keyPairQueue.publicKey);
+
+                    // Transaction data
+                    const data = {
+                        name: $("#name_queque").val()
+                    };
+
+                    // Send transaction into blockchain        
+                    var t = transaction.send(TRANSACTION_URL, data, keyPairQueue.secretKey);
+                    t.then(function(value) {
+                            $.ajax({
+                                url: 'http://127.0.0.1:8280'+TRANSACTION_URL,
+                                data: {hash: value},
+                                success: function(result){
+                                    if (result.status.type == "success"){
+                                        $.each(parameters, function(index, value){                   
+                                            let idParameter = value.getAttribute("data-id"),
+                                            nameParam = $('.parameterName[data-id='+idParameter+']'),
+                                            sortParam = $('.parameterSort[data-id='+idParameter+']'),
+                                            prioritySortParam = $('.parameterPrioritySort[data-id='+idParameter+']'),
+                                            sortOrderParam = $('.parameterSortOrder[data-id='+idParameter+']'),
+                                            obligatoryParam = $('.parameterObligatory[data-id='+idParameter+']'),
+                                            hiddenParam = $('.parameterHidden[data-id='+idParameter+']'),
+                                            orderShowParam = $('.parameterOrderShow[data-id='+idParameter+']'),
+                                            typeParam = $('.parameterType[data-id='+idParameter+']'),
+                                            objectParam = {
+                                                queueKey: keyPairQueue.publicKey,
+                                                name: nameParam.val(),
+                                                type: typeParam.text(),
+                                                order: Number(orderShowParam.val()),
+                                                sortable: 0,
+                                                priorityInOrder: 0,
+                                                obligatory: 0,
+                                                coefficient: Number(prioritySortParam.val())
+                                                
+                                            };
+                                            if (sortParam.prop("checked") == true){
+                                                objectParam.sort = 1;
+                                                objectParam.prioritySort = prioritySortParam.val();
+                                                if (sortOrderParam.prop("checked") == true){
+                                                    objectParam.sortOrder = 1
+                                                }
+                                            }
+                                            if (obligatoryParam.prop("checked") == true){
+                                                objectParam.obligatory = 1;
+                                            }
+                                            else if (hiddenParam.prop("checked") == true){
+                                                objectParam.hidden = 1;
+                                            }
+                                            arrayObjectParams.push(objectParam);
+
+                                            var keyPairParam = Exonum.keyPair();
+                                            let transactionParam = new CreateTransaction(keyPairParam.publicKey);
+
+                                            // Transaction data
+                                            let dataParam = objectParam;
+
+                                            // Send transaction into blockchain        
+                                            let paramPromise = transactionParam.send(TRANSACTION_URL, dataParam, keyPairParam.secretKey),
+                                            lengthIntParams = parameters.length,
+                                            lengthIntParam = 0;
+                                            paramPromise.then(function(valueParam){
+                                                if (valueParam.status.type == "success"){
+                                                    if (lengthIntParam != lengthIntParams){
+                                                        lengthIntParam++;
+                                                    }
+                                                    else {
+                                                        M.toast({html: 'Очередь и параметры сохранены!'});
+                                                    }
+                                                }
+                                            });
+                                        });
+                                    }                               
+                                }
+                            });
+                        }, function(reason) {
+                        // отказ
+                    });
+                }
+                
+                
+                let queue = {
+                    name: $("#name_queque").val(),
+                    parameters: JSON.stringify(arrayObjectParams) 
+                }
+                debugger;
             }
         }
+    }
+
+    function fillModalContentParameters () {
+        let string = '<div class="input-field col s12">'
+            +'<select onclick="renderParametr()" id="selectParametrs">'
+                +'<option value="" disabled selected>Не выбрано</option>'
+                +'<option value="1">Логическое (да/нет)</option>'
+                +'<option value="2">Текстовое</option>'
+                +'<option value="3">Числовое</option>'
+                +'<option value="4">Дата</option>'
+            +'</select>'
+            +'<label>Выберите тип параметра</label>'
+        +'</div>'
+        +'<a onclick="renderParameter()" id="selectParameter" class="waves-effect btn">Выбрать</a>';
+        $('.custom-modal-content').html(string);
+        $('select').formSelect();
+        $("#selectParameter").click(function(){        
+            let valueParametr = $('#selectParametrs').val(),
+            rows = {
+                nameParameter: "",
+                sort: {
+                    bool: false,
+                    disabled: false
+                },
+                prioritySort: {
+                    disabled: true
+                },
+                sortOrder: {
+                    bool: false,
+                    disabled: true
+                },
+                orderShow: {
+                    disabled: false
+                },
+                obligatory: {
+                    bool: false,
+                    disabled: false
+                },
+                hidden: {
+                    bool: false,
+                    disabled: false
+                },
+                typeParameter: ""
+            };
+            switch(Number(valueParametr)) {
+                case 1:
+                    rows.typeParameter = "bool";
+                    break;
+                case 2:
+                    rows.typeParameter = "string";
+                    rows.sort.disabled = true;
+                    break;
+                case 3:
+                    rows.typeParameter = "number";
+                    break;
+                case 4:
+                    rows.typeParameter = "date";
+                    break;
+                default:    
+                    $('#custom-modal').modal("close");  
+                    return;      
+                    break;
+            }
+            let rowsId = function(){return $(".parameters").length}(),
+            tableRowHtml = '<tr data-id="'+rowsId+'" class="parameters">'
+                +'<td>'             
+                    +'<div class="input-field">'
+                        +'<input type="text" data-id="'+rowsId+'" placeholder="Не указано" class="parameterName">'
+                    +'</div>'
+                +'</td>'
+                +'<td>'
+                    +'<p>'
+                        +'<label>'
+                            +'<input class="parameterSort" onclick="logicParameterDisabled(1, '+rowsId+')" data-id="'+rowsId+'" type="checkbox" '+function(){return rows.sort.disabled == true ? 'disabled' : ''}()+' />'
+                            +'<span></span>'
+                        +'</label>'
+                    +'</p>'
+                +'</td>'
+                +'<td>'
+                    +'<div class="input-field">'
+                        +'<input data-id="'+rowsId+'" type="number" '+function(){return rows.prioritySort.disabled == true ? 'disabled' : ''}()+' value="'
+                        + function(){return $(".parameters[disabled='']").length}()             
+                        +'" class="parameterPrioritySort">'
+                    +'</div>'
+                +'</td>'
+                +'<td>'
+                    +'<div class="switch">'
+                        +'<label>'
+                            +'Возрастание'
+                            +'<input data-id="'+rowsId+'" class="parameterSortOrder" '+function(){return rows.sortOrder.disabled == true ? 'disabled' : ''}()+' type="checkbox">'
+                            +'<span class="lever"></span>'
+                            +'Убывание'
+                        +'</label>'
+                    +'</div>'
+                +'</td>'
+                +'<td>'
+                    +'<p>'
+                        +'<label>'
+                            +'<input data-id="'+rowsId+'" onclick="logicParameterDisabled(2, '+rowsId+')" class="parameterObligatory" type="checkbox" '+function(){return rows.obligatory.disabled == true ? 'disabled' : ''}()+' />'
+                            +'<span></span>'
+                        +'</label>'
+                    +'</p>'
+                +'</td>'
+                +'<td>'
+                    +'<p>'
+                        +'<label>'
+                            +'<input data-id="'+rowsId+'" onclick="logicParameterDisabled(3, '+rowsId+')" class="parameterHidden" type="checkbox" '+function(){return rows.hidden.disabled == true ? 'disabled' : ''}()+' />'
+                            +'<span></span>'
+                        +'</label>'
+                    +'</p>'        
+                +'</td>'
+                +'<td>'
+                    +'<div class="input-field">'
+                        +'<input data-id="'+rowsId+'" type="number" '+function(){return rows.orderShow.disabled == true ? 'disabled' : ''}()+' value="'
+                        + function(){return $(".parameters").length}()             
+                        +'" class="parameterOrderShow">'
+                    +'</div>'
+                +'</td>'
+                +'<td data-id="'+rowsId+'" style="display: none;" class="parameterType">'+rows.typeParameter+'</td>'
+            +'</tr>';
+            $('#parametersTable>tbody').append(tableRowHtml);
+            $('#custom-modal').modal("close");
+            $(".parameterSort, .parameterObligatory, .parameterHidden").click(function(){ 
+                let numberUsedLogical = 0,
+                idParameter = $(this).attr("data-id");
+                if ($(this).prop("class") == "parameterSort"){
+                    numberUsedLogical = 1;
+                }
+                else if ($(this).prop("class") == "parameterObligatory"){
+                    numberUsedLogical = 2;
+                }
+                else if ($(this).prop("class") == "parameterHidden"){
+                    numberUsedLogical = 3;
+                }
+                switch(numberUsedLogical){
+                case 1:
+                    if ($('.parameterSort[data-id='+idParameter+']').prop("checked")){
+                        $('.parameterPrioritySort[data-id='+idParameter+']').prop('disabled', false);
+                        $('.parameterSortOrder[data-id='+idParameter+']').prop('disabled', false);
+                    }
+                    else {
+                        $('.parameterPrioritySort[data-id='+idParameter+']').val(0)
+                        $('.parameterPrioritySort[data-id='+idParameter+']').prop('disabled', true);
+                        $('.parameterSortOrder[data-id='+idParameter+']').prop('disabled', true);
+                    }
+                    $('.parameterPrioritySort[data-id='+idParameter+']')
+                    break;
+                case 2:
+                    if ($('.parameterObligatory[data-id='+idParameter+']').prop("checked")){
+                        $('.parameterHidden[data-id='+idParameter+']').prop('disabled', true);
+                        $('.parameterHidden[data-id='+idParameter+']').prop("checked", false);
+                    }
+                    else {
+                        $('.parameterHidden[data-id='+idParameter+']').prop('disabled', false);
+                    }
+                    break;
+                case 3:
+                    if ($('.parameterHidden[data-id='+idParameter+']').prop("checked")){
+                        $('.parameterObligatory[data-id='+idParameter+']').prop('disabled', true);
+                        $('.parameterObligatory[data-id='+idParameter+']').prop("checked", false);
+                    }
+                    else {
+                        $('.parameterObligatory[data-id='+idParameter+']').prop('disabled', false);
+                    }
+                    break;
+                }
+            });
+        });
     }
 
 $('#createCustomModalButton').click(function(){
@@ -161,193 +428,4 @@ function tableSearch() {
     }
 }
 
-
-
-function renderParameter(){
-    let valueParametr = $('#selectParametrs').val(),
-    rows = {
-        nameParameter: "",
-        sort: {
-            bool: false,
-            disabled: false
-        },
-        prioritySort: {
-            disabled: true
-        },
-        sortOrder: {
-            bool: false,
-            disabled: true
-        },
-        orderShow: {
-            disabled: false
-        },
-        obligatory: {
-            bool: false,
-            disabled: false
-        },
-        hidden: {
-            bool: false,
-            disabled: false
-        },
-        typeParameter: ""
-    };
-    switch(Number(valueParametr)) {
-        case 1:
-            rows.typeParameter = "bool";
-        case 2:
-            rows.typeParameter = "string";
-            rows.sort.disabled = true;
-            break;
-        case 3:
-            rows.typeParameter = "number";
-            break;
-        case 4:
-            rows.typeParameter = "date";
-            break;
-        default:    
-            $('#custom-modal').modal("close");  
-            return;      
-            break;
-    }
-    let rowsId = function(){return $(".parameters").length}(),
-    tableRowHtml = '<tr data-id="'+rowsId+'" class="parameters">'
-        +'<td>'             
-            +'<div class="input-field">'
-                +'<input type="text" data-id="'+rowsId+'" placeholder="Не указано" class="parameterName">'
-            +'</div>'
-        +'</td>'
-        +'<td>'
-            +'<p>'
-                +'<label>'
-                    +'<input class="parameterSort" onclick="logicParameterDisabled(1, '+rowsId+')" data-id="'+rowsId+'" type="checkbox" '+function(){return rows.sort.disabled == true ? 'disabled' : ''}()+' />'
-                    +'<span></span>'
-                +'</label>'
-            +'</p>'
-        +'</td>'
-        +'<td>'
-            +'<div class="input-field">'
-                +'<input data-id="'+rowsId+'" type="number" '+function(){return rows.prioritySort.disabled == true ? 'disabled' : ''}()+' value="'
-                + function(){return $(".parameters[disabled='']").length}()             
-                +'" class="parameterPrioritySort">'
-            +'</div>'
-        +'</td>'
-        +'<td>'
-            +'<div class="switch">'
-                +'<label>'
-                    +'Возрастание'
-                    +'<input data-id="'+rowsId+'" class="parameterSortOrder" '+function(){return rows.sortOrder.disabled == true ? 'disabled' : ''}()+' type="checkbox">'
-                    +'<span class="lever"></span>'
-                    +'Убывание'
-                +'</label>'
-            +'</div>'
-        +'</td>'
-        +'<td>'
-            +'<p>'
-                +'<label>'
-                    +'<input data-id="'+rowsId+'" onclick="logicParameterDisabled(2, '+rowsId+')" class="parameterObligatory" type="checkbox" '+function(){return rows.obligatory.disabled == true ? 'disabled' : ''}()+' />'
-                    +'<span></span>'
-                +'</label>'
-            +'</p>'
-        +'</td>'
-        +'<td>'
-            +'<p>'
-                +'<label>'
-                    +'<input data-id="'+rowsId+'" onclick="logicParameterDisabled(3, '+rowsId+')" class="parameterHidden" type="checkbox" '+function(){return rows.hidden.disabled == true ? 'disabled' : ''}()+' />'
-                    +'<span></span>'
-                +'</label>'
-            +'</p>'        
-        +'</td>'
-        +'<td>'
-            +'<div class="input-field">'
-                +'<input data-id="'+rowsId+'" type="number" '+function(){return rows.orderShow.disabled == true ? 'disabled' : ''}()+' value="'
-                + function(){return $(".parameters").length}()             
-                +'" class="parameterOrderShow">'
-            +'</div>'
-        +'</td>'
-        +'<td data-id="'+rowsId+'" style="display: none;" class="parameterType">'+rows.typeParameter+'</td>'
-    +'</tr>';
-    $('#parametersTable>tbody').append(tableRowHtml);
-    $('#custom-modal').modal("close");
-}
-
-function logicParameterDisabled (numberUsedLogical, idParameter){
-    switch(numberUsedLogical){
-        case 1:
-            if ($('.parameterSort[data-id='+idParameter+']').prop("checked")){
-                $('.parameterPrioritySort[data-id='+idParameter+']').prop('disabled', false);
-                $('.parameterSortOrder[data-id='+idParameter+']').prop('disabled', false);
-            }
-            else {
-                $('.parameterPrioritySort[data-id='+idParameter+']').val(0)
-                $('.parameterPrioritySort[data-id='+idParameter+']').prop('disabled', true);
-                $('.parameterSortOrder[data-id='+idParameter+']').prop('disabled', true);
-            }
-            $('.parameterPrioritySort[data-id='+idParameter+']')
-            break;
-        case 2:
-            if ($('.parameterObligatory[data-id='+idParameter+']').prop("checked")){
-                $('.parameterHidden[data-id='+idParameter+']').prop('disabled', true);
-                $('.parameterHidden[data-id='+idParameter+']').prop("checked", false);
-            }
-            else {
-                $('.parameterHidden[data-id='+idParameter+']').prop('disabled', false);
-            }
-            break;
-        case 3:
-            if ($('.parameterHidden[data-id='+idParameter+']').prop("checked")){
-                $('.parameterObligatory[data-id='+idParameter+']').prop('disabled', true);
-                $('.parameterObligatory[data-id='+idParameter+']').prop("checked", false);
-            }
-            else {
-                $('.parameterObligatory[data-id='+idParameter+']').prop('disabled', false);
-            }
-            break;
-    }
-}
-
-function buildParameters (){
-    let parameters = $('#parametersTable>tbody>.parameters'),
-    arrayObjectParams = [];
-
-    $.each(parameters, function(index, value){
-        
-        let idParameter = value.getAttribute("data-id"),
-        nameParam = $('.parameterName[data-id='+idParameter+']'),
-        sortParam = $('.parameterSort[data-id='+idParameter+']'),
-        prioritySortParam = $('.parameterPrioritySort[data-id='+idParameter+']'),
-        sortOrderParam = $('.parameterSortOrder[data-id='+idParameter+']'),
-        obligatoryParam = $('.parameterObligatory[data-id='+idParameter+']'),
-        hiddenParam = $('.parameterHidden[data-id='+idParameter+']'),
-        orderShowParam = $('.parameterOrderShow[data-id='+idParameter+']'),
-        typeParam = $('.parameterType[data-id='+idParameter+']');
-        objectParam = {
-            name: nameParam.val(),
-            type: typeParam.text(),
-            sort: 0,
-            prioritySort: 0,
-            sortOrder: "asc",
-            obligatory: 0,
-            hidden: 0,
-            orderShow: Number(orderShowParam.val())
-        };
-        if (sortParam.prop("checked") == true){
-            objectParam.sort = 1;
-            objectParam.prioritySort = prioritySortParam.val();
-            if (sortOrderParam.prop("checked") == true){
-                objectParam.sortOrder = "desc"
-            }
-        }
-        if (obligatoryParam.prop("checked") == true){
-            objectParam.obligatory = 1;
-        }
-        else if (hiddenParam.prop("checked") == true){
-            objectParam.hidden = 1;
-        }
-        arrayObjectParams.push(objectParam);
-    });
-    let queue = {
-        name: $("#name_queque").val(),
-        parameters: JSON.stringify(arrayObjectParams) 
-    }
-}
 </script>
