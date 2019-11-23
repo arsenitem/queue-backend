@@ -53,8 +53,7 @@ message CreateUser {
     string name = 2;
 }
 message CreateQueue {
-    exonum.PublicKey key = 1;
-    string name = 2;
+    string name = 1;
 }
 message CreateProfile {
     exonum.PublicKey user_key = 1;
