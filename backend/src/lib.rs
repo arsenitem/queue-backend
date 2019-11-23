@@ -27,6 +27,13 @@ pub mod proto;
 pub mod schema;
 /// Transactions
 pub mod transactions;
+/// atrs in queue
+pub mod queue_attributes;
+/// user profiles
+pub mod profile;
+
+//users
+pub mod user;
 
 use exonum_merkledb::Snapshot;
 

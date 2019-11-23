@@ -17,18 +17,19 @@
 use exonum::crypto::{Hash, PublicKey};
 
 use super::proto;
-use serde_json::json;
 
 /// Wallet information stored in the database.
 #[derive(Clone, Debug, ProtobufConvert)]
-#[exonum(pb = "proto::Queue_fields", serde_pb_convert)]
-pub struct Queue_fields {
+#[exonum(pb = "proto::AttributesInQueue", serde_pb_convert)]
+pub struct AttributesInQueue {
+    ///pub key
+    pub key: PublicKey,
     /// `PublicKey` of the queue.
-    pub queue_key: PublicKey,
+    pub queueKey: PublicKey,
     /// Name of the field.
     pub name: String,   
     /// type    
-    pub type: String,  
+    pub attr_type: String,  
     /// order
     pub order: String,
     //priority 
@@ -36,46 +37,35 @@ pub struct Queue_fields {
     ///priority vector
     pub priorityInOrder: bool,
     /// coefficient
-    pub coefficient: u64;
+    pub coefficient: u64,
     ///required or not
     pub required: u32,
-    /// `Hash` of the transactions history.    
-    //pub history_hash: Hash,
-    ///Json string
-    //pub serde_json: String,
-    ///Creation date  
-    //pub created: u64,
-     ///Opening date  
-    // pub opened: u64,
-      ///Closing date  
-   // pub closed: u64,   
-    /// Length of the transactions history.
-    //pub history_len: u64,
 }
 
-impl Queue_attributes {
+impl AttributesInQueue {
     /// Create new queue.
     pub fn new(
-        &queue_key: &PublicKey,        
+        &key: &PublicKey,     
+        queuekey: PublicKey,        
         name: &str,
-        type: u32,
-        order: u32,
-        priority: u32,
-        priority_vector: u32,
-        type: u32,
-        coefficient: u32,
-       // history_len: u64,
-        //&history_hash: &Hash,
+        attr_type: String,
+        order: String,
+        priority: u64,
+        required: u32,
+        priorityInOrder: bool,
+        coefficient: u64,
     ) -> Self {
         Self {
-            queue_key,
+            key,
+            queueKey: queueKey.to_owned(),
             name: name.to_owned(),
-            type,
+            attr_type,
             order,
             priority,
-            priority_vector,
-            type,
-            coefficient,    
+            required,
+            priorityInOrder,
+            coefficient,
         }
     }
+}
    

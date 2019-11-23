@@ -11,8 +11,7 @@ pub struct Profile {
     pub user_key: PublicKey,
     ///public key of queue
     pub queue_key: PublicKey,
-    /// Name of the queue.
-    pub name: String,
+    /// rating
     pub rating: u64,
 }
 
@@ -21,13 +20,11 @@ impl Profile {
     pub fn new(
         &key: &PublicKey, 
         &user_key: &PublicKey,
-        &queue_key: &PublicKey,    
-        name: &String,     
+        &queue_key: &PublicKey,      
         rating: u64,
     ) -> Self {
         Self {
             key,
-            name: name.to_owned(),
             user_key,
             queue_key,
             rating,
