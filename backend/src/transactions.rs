@@ -49,15 +49,21 @@ impl From<Error> for ExecutionError {
         ExecutionError::with_description(value as u8, description)
     }
 }
+///struct createUser
+#[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
+#[exonum(pb = "proto::CreateUser")]
+pub struct CreateUser{
+    pub name: String,
+}
 
-///struct
+///struct createQueue
 #[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
 #[exonum(pb = "proto::CreateQueue")]
 pub struct CreateQueue {
     /// ads
     pub name: String,
 }
-///struct
+///struct addattributes
 #[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
 #[exonum(pb = "proto::AddAttributesToQueue")]
 pub struct AddAttributesToQueue {
@@ -74,25 +80,79 @@ pub struct AddAttributesToQueue {
 pub enum ParticipantTransactions {
     ///
      CreateQueue(CreateQueue),
+     CreateUser(CreateUser),
+}
+impl AddAttributesToQueue{
+    #[doc(hidden)]
+    pub fn sign(
+        pk: &PublicKey,
+        name: String,
+        type: String,
+        order: String,
+        priority: u64,
+        requiredL u32,
+        priorityInOrder: u32,
+        coefficient: u32,
+        sk: &SecretKey,
+    ) -> Signed<RawTransaction>{
+        Message::sign_transaction(Self {name, type, order, priority, required, priorityInOrder, coefficient}, SERVICE_ID, *pk, sk)
+    }    
+}
+impl Transaction for AddAttributesToQueue{
+    fn execute(&self, context: TransactionContext) -> ExecutionResult{
+        let mut schema = Schema:: new(context.fork());
+        let key = &context.author();
+        if schema.queue_attributes(key).is_none() {
+            let name = &self.name;
+            let type = &self.type;
+            let order = &self.order;
+            let priority = &self.priority;
+            let required = &self.required;
+            let priorityInOrder = &self.priorityInOrder;
+            let coefficient = &self.coefficient;
+            schema.add_attributes(key, name, type, order, priority, required, priorityInOrder, coefficient);
+
+            Ok(())
+        } else {
+            Err(Error::ParticipantAlreadyExists)?
+        }
+    }
+}
+impl CreateUser{
+    #[doc(hidden)]
+    pub fn sign(
+        pk: &PublicKey,
+        name: String,
+        sk: &SecretKey,
+    ) -> Signed<RawTransaction>{
+        Message::sign_transaction(Self {name}, SERVICE_ID, *pk, sk)
+    }    
+}
+impl Transaction for CreateUser{
+    fn execute(&self, context: TransactionContext) -> ExecutionResult{
+        let mut schema = Schema:: new(context.fork());
+        let key = &context.author();
+        if schema.user(key).is_none() {
+            let name = &self.name;
+
+            schema.add_user(key, name);
+
+            Ok(())
+        } else {
+            Err(Error::ParticipantAlreadyExists)?
+        }
+    }
 }
 
 
 impl CreateQueue {
     #[doc(hidden)]
     pub fn sign(
-<<<<<<< HEAD
         pk: &PublicKey,       
         name: String,
         sk: &SecretKey,
     ) -> Signed<RawTransaction> {
         Message::sign_transaction(Self { name }, SERVICE_ID, *pk, sk)
-=======
-        pk: &PublicKey,
-        name: String,
-        sk: &SecretKey,
-    ) -> Signed<RawTransaction> {
-        Message::sign_transaction(Self {name }, SERVICE_ID, *pk, sk)
->>>>>>> master
     }
 }
 impl Transaction for CreateQueue {
