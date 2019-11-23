@@ -68,11 +68,11 @@ pub struct AddAttributesToQueue {
     ///
     pub typeAttribute: String,
     ///
-    pub order: String,
+    pub order: u64,
     ///
-    pub sortable: u64,
+    pub sortable: bool,
     ///
-    pub obligatory: u32 ,
+    pub obligatory: bool ,
     ///
     pub priorityInOrder: bool,
     ///
@@ -94,9 +94,9 @@ impl AddAttributesToQueue {
         QueueKey: PublicKey,
         name: String,
         typeAttribute:String,
-        order:String,
-        sortable:u64,
-        obligatory:u32,
+        order:u64,
+        sortable:bool,
+        obligatory:bool,
         priorityInOrder:bool,
         coefficient:u64,
         sk: &SecretKey,

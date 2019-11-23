@@ -18,7 +18,7 @@ use queue_constructor::{
 
 /// Check that the wallet creation transaction works when invoked via API.
 #[test]
-fn test_create_wallet() {
+fn test_create_queue() {
     let (mut testkit, api) = create_testkit();
     // Create and send a transaction via API
     let (pk, _) = crypto::gen_keypair();
@@ -28,9 +28,30 @@ fn test_create_wallet() {
     api.assert_tx_status(tx.hash(), &json!({ "type": "success" }));
 
     // // Check that the user indeed is persisted by the service.
-    // let wallet = api.get_wallet(tx.author()).unwrap();
-    // assert_eq!(wallet.pub_key, tx.author());
-    // assert_eq!(wallet.name, ALICE_NAME);
+    let queue = api.get_queue(tx.author()).unwrap();
+     assert_eq!(queue.pub_key, tx.author());
+    assert_eq!(queue.name, SUPER_QUEUE);
+    // assert_eq!(wallet.balance, 100);
+}
+fn test_add_attributes() {
+    let (mut testkit, api) = create_testkit();
+    // Create and send a transaction via API
+    let (pk, _) = crypto::gen_keypair();
+    let hello = String::from("Добавление атрибутов");
+    let (tx, _) = api.add_attributes(pk: &PublicKey, queue.pub_key: &PublicKey, name: String, typeAttribute: String, order: u64, sortable: bool, obligatory: bool, priorityInOrder: bool, coefficient: u32)(&pk, hello);
+    testkit.create_block();
+    api.assert_tx_status(tx.hash(), &json!({ "type": "success" }));
+
+    // // Check that the user indeed is persisted by the service.
+    let attributesinqueue = api.get_attributesinqueue(attributesinqueue.pub_key).unwrap();
+     assert_eq!(attributesinqueue.key, tx.author());
+    assert_eq!(attributesinqueue.name, ATTRIBUTE.NAME);
+    assert_eq!(attributesinqueue.typeAttribute, TYPEATTR);
+    assert_eq!((attributesinqueue.order, 1);
+    assert_eq!(attributesinqueue.sortable, true);
+    assert_eq!(attributesinqueue.obligatory, true );
+    assert_eq!(attributesinqueue.priorityInOrder, true );
+    assert_eq!(attributesinqueue.coefficient, 1);
     // assert_eq!(wallet.balance, 100);
 }
 /// Wrapper for the cryptocurrency service API allowing to easily use it
@@ -67,6 +88,21 @@ impl ParticipantsApi {
         let (pubkey, key) = crypto::gen_keypair();
         // Create a pre-signed transaction
         let tx = CreateQueue::sign(&pubkey,pk,name,&key);
+
+        let data = messages::to_hex_string(&tx);
+        let tx_info: TransactionResponse = self
+            .inner
+            .public(ApiKind::Explorer)
+            .query(&json!({ "tx_body": data }))
+            .post("v1/transactions")
+            .unwrap();
+        assert_eq!(tx_info.tx_hash, tx.hash());
+        (tx, key)
+    }
+    fn add_attributes(&self,pk: &PublicKey, name: String, typeAttribute: String, order: u64, sortable: bool, obligatory: bool, priorityInOrder: bool, coefficient: u32 ) -> (Signed<RawTransaction>, SecretKey) {
+        let (pubkey, key) = crypto::gen_keypair();
+        // Create a pre-signed transaction
+        let tx = AddAttributes::sign(&pubkey,pk,name, typeAttribute, order, sortable, obligatory, priorityInOrder, coefficient, &key);
 
         let data = messages::to_hex_string(&tx);
         let tx_info: TransactionResponse = self

@@ -31,11 +31,11 @@ pub struct AttributesInQueue {
     /// type    
     pub typeAttribute: String,  
     /// order
-    pub order: String,
+    pub order: u64,
     ///priority 
-    pub sortable: u64,
+    pub sortable: bool,
     ///priority vector
-    pub obligatory: u32,
+    pub obligatory: bool,
     /// coefficient
     pub priorityInOrder: bool,
     ///required or not
@@ -49,9 +49,9 @@ impl AttributesInQueue {
         QueueKey: PublicKey,        
         name: &str,
         typeAttribute: String,
-        order: String,
-        sortable: u64,
-        obligatory: u32,
+        order: u64,
+        sortable: bool,
+        obligatory: bool,
         priorityInOrder: bool,
         coefficient: u64,
     ) -> Self {
