@@ -55,7 +55,7 @@ impl From<Error> for ExecutionError {
 #[exonum(pb = "proto::CreateQueue")]
 pub struct CreateQueue {
     /// `PublicKey` of participant.
-    pub key: PublicKey,
+    
     /// ads
     pub name: String,
 }
@@ -70,21 +70,20 @@ pub enum ParticipantTransactions {
 impl CreateQueue {
     #[doc(hidden)]
     pub fn sign(
-        pk: &PublicKey,
-        &key: &PublicKey,
+        pk: &PublicKey,       
         name: String,
         sk: &SecretKey,
     ) -> Signed<RawTransaction> {
-        Message::sign_transaction(Self { key, name }, SERVICE_ID, *pk, sk)
+        Message::sign_transaction(Self { name }, SERVICE_ID, *pk, sk)
     }
 }
 impl Transaction for CreateQueue {
     fn execute(&self, context: TransactionContext) -> ExecutionResult {
-        let hash = context.tx_hash();
+        
     
         let mut schema = Schema::new(context.fork());
 
-        let key = &self.key;
+        let key = &context.author();
 
         if schema.queue(key).is_none() {
             let name = &self.name;

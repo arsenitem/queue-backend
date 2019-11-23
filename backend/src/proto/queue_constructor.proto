@@ -7,7 +7,7 @@ import "helpers.proto";
 // System user
 message User {
     // `PublicKey`
-    exonum.PublicKey key = 1;
+    
     // Timestamp
     string name = 2;
 }
@@ -17,14 +17,14 @@ message CreateUser {
 ///
 message Queue {
     // `PublicKey`
-    exonum.PublicKey key = 1;
+    
     // 
     string name = 2;
 }
 
 ///
 message CreateQueue {
-    exonum.PublicKey key = 1;
+    
     string name = 2;
 }
 
