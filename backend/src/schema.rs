@@ -10,9 +10,9 @@ use std::cmp::Ordering;
 pub const Queues_TYPES_TABLE: &str = "queue_constructor.queue";
 /// Pipe type history table name
 pub const Queue_HISTORY_TABLE: &str = "queue_constructor.queue.history";
-
+///
 pub const Queues_attribues_TYPES_TABLE: &str = "queue_attributes_constructor.queue";
-
+///
 pub const Users_TABLE: &str = "queue_users";
 /// Database schema.
 #[derive(Debug)]
@@ -56,9 +56,11 @@ where
     pub fn attributes_in_queues(&self) -> ProofMapIndex<T, PublicKey, AttributesInQueue> {
         ProofMapIndex::new(Queues_attribues_TYPES_TABLE, self.view.clone())
     }
+    ///
     pub fn users(&self) -> ProofMapIndex<T, PublicKey, User> {
         ProofMapIndex::new(Users_TABLE, self.view.clone())     
     }
+    ///
     pub fn user(&self, pub_key: &PublicKey) -> Option<User> {
         self.users().get(pub_key)     
     }

@@ -32,7 +32,7 @@ pub mod queue_attributes;
 /// user profiles
 pub mod profile;
 
-//users
+///users
 pub mod user;
 
 use exonum_merkledb::Snapshot;

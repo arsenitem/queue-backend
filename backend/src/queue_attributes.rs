@@ -32,7 +32,7 @@ pub struct AttributesInQueue {
     pub attr_type: String,  
     /// order
     pub order: String,
-    //priority 
+    ///priority 
     pub priority: u64,
     ///priority vector
     pub priorityInOrder: bool,
@@ -46,7 +46,7 @@ impl AttributesInQueue {
     /// Create new queue.
     pub fn new(
         &key: &PublicKey,     
-        queuekey: PublicKey,        
+        queueKey: PublicKey,        
         name: &str,
         attr_type: String,
         order: String,
@@ -57,7 +57,7 @@ impl AttributesInQueue {
     ) -> Self {
         Self {
             key,
-            queueKey: queueKey.to_owned(),
+            queueKey,
             name: name.to_owned(),
             attr_type,
             order,
