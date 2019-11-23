@@ -16,12 +16,6 @@ pub struct GetFirstQuery {
     ///key to get queue
     pub pub_key: PublicKey,
 }
-/// Describes the query parameters for the `get_wallet` endpoint.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
-pub struct GetAllQueues {
-    ///key to get queue
-}
-
 
 /// Public service API description.
 #[derive(Debug, Clone, Copy)]

@@ -61,41 +61,81 @@ pub struct CreateQueue {
 #[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
 #[exonum(pb = "proto::AddAttributesToQueue")]
 pub struct AddAttributesToQueue {
-    pub name: String;
-    pub type: String;
-    pub order: String;
-    pub priority: uint64;
-    pub required: uint32 ;
-    pub priorityInOrder: uint32 ;
-    pub coefficient: uint32;
+    ///
+    pub queueKey: PublicKey,
+    ///
+    pub name: String,
+    ///
+    pub attr_type: String,
+    ///
+    pub order: String,
+    ///
+    pub priority: u64,
+    ///
+    pub required: u32 ,
+    ///
+    pub priorityInOrder: bool,
+    ///
+    pub coefficient: u64,
 }
 /// Transaction group.
 #[derive(Serialize, Deserialize, Clone, Debug, TransactionSet)]
 pub enum ParticipantTransactions {
     ///
      CreateQueue(CreateQueue),
+    ///
+     AddAttributesToQueue(AddAttributesToQueue),
 }
-
+///
+impl AddAttributesToQueue {
+    #[doc(hidden)]
+    pub fn sign(
+        pk: &PublicKey,
+        queueKey: PublicKey,
+        name: String,
+        attr_type:String,
+        order:String,
+        priority:u64,
+        required:u32,
+        priorityInOrder:bool,
+        coefficient:u64,
+        sk: &SecretKey,
+    ) -> Signed<RawTransaction> {
+        Message::sign_transaction(Self { queueKey,name,attr_type, order, priority, required, priorityInOrder, coefficient}, SERVICE_ID, *pk, sk)
+    }
+}
 
 impl CreateQueue {
     #[doc(hidden)]
     pub fn sign(
-<<<<<<< HEAD
         pk: &PublicKey,       
         name: String,
         sk: &SecretKey,
     ) -> Signed<RawTransaction> {
         Message::sign_transaction(Self { name }, SERVICE_ID, *pk, sk)
-=======
-        pk: &PublicKey,
-        name: String,
-        sk: &SecretKey,
-    ) -> Signed<RawTransaction> {
-        Message::sign_transaction(Self {name }, SERVICE_ID, *pk, sk)
->>>>>>> master
     }
 }
 impl Transaction for CreateQueue {
+    fn execute(&self, context: TransactionContext) -> ExecutionResult {
+        
+    
+        let mut schema = Schema::new(context.fork());
+
+        let key = &context.author();
+
+        if schema.queue(key).is_none() {
+            let name = &self.name;
+
+            schema.add_queue(key, name);
+
+            Ok(())
+        } else {
+            Err(Error::ParticipantAlreadyExists)?
+        }
+     
+    }
+}
+impl Transaction for AddAttributesToQueue {
     fn execute(&self, context: TransactionContext) -> ExecutionResult {
         
     
