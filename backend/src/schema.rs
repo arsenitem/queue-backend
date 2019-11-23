@@ -1,5 +1,7 @@
 //! Iphone queue database schema.
 use crate::queue::Queue;
+use crate::queue_attributes::AttributesInQueue;
+use crate::user::User;
 use exonum::crypto::{Hash, PublicKey};
 use exonum_merkledb::{IndexAccess, ObjectHash, ProofListIndex, ProofMapIndex};
 use std::cmp::Ordering;
@@ -9,6 +11,9 @@ pub const Queues_TYPES_TABLE: &str = "queue_constructor.queue";
 /// Pipe type history table name
 pub const Queue_HISTORY_TABLE: &str = "queue_constructor.queue.history";
 
+pub const Queues_attribues_TYPES_TABLE: &str = "queue_attributes_constructor.queue";
+
+pub const Users_TABLE: &str = "queue_users";
 /// Database schema.
 #[derive(Debug)]
 pub struct Schema<T> {
@@ -29,9 +34,8 @@ where
     pub fn new(view: T) -> Self {
         Schema { view }
     }
-
-    /// Returns `ProofMapIndex` with pipe types.
-    pub fn queues(&self) -> ProofMapIndex<T, PublicKey, Queue> {
+     /// Returns `ProofMapIndex` with pipe types.
+     pub fn queues(&self) -> ProofMapIndex<T, PublicKey, Queue> {
         ProofMapIndex::new(Queues_TYPES_TABLE, self.view.clone())
     }
 
@@ -44,26 +48,60 @@ where
     pub fn queue(&self, pub_key: &PublicKey) -> Option<Queue> {
         self.queues().get(pub_key)
     }
-
     /// Returns the state hash of service.
     pub fn state_hash(&self) -> Vec<Hash> {
         vec![self.queues().object_hash()]
     }
-
-    /// Create new participant and append first record to its history.
+    ///
+    pub fn attributes_in_queues(&self) -> ProofMapIndex<T, PublicKey, AttributesInQueue> {
+        ProofMapIndex::new(Queues_attribues_TYPES_TABLE, self.view.clone())
+    }
+    pub fn users(&self) -> ProofMapIndex<T, PublicKey, User> {
+        ProofMapIndex::new(Users_TABLE, self.view.clone())     
+    }
+    pub fn user(&self, pub_key: &PublicKey) -> Option<User> {
+        self.users().get(pub_key)     
+    }
+     /// Create new Queue and append first record to its history.
     pub fn add_queue(
         &mut self,
         key: &PublicKey,
-        name: string
+        name: &String
     ) {
         let created_queue = {
           
             Queue::new(
                 key,
-                name
+                &name
             )
         };
-        self.queus().put(key, created_queue);
+        self.queues().put(key, created_queue);
     }
-   
+    // pub fn add_attributes_to_queue (
+    //     &mut self,
+    //     key: &PublicKey,
+    //     queueKey: PublicKey,
+    //     name: String,
+    //     attr_type:String,
+    //     order:String,
+    //     priority:u64,
+    //     required:u32,
+    //     priorityInOrder:bool,
+    //     coefficient:u64,
+    // )  {
+    //     let attributes_in_queue = {
+    //         AttributesInQueue:: new(
+    //             key,
+    //             &queueKey,
+    //             &name,
+    //             attr_type,
+    //             order,
+    //             priority,
+    //             required,
+    //             priorityInOrder,
+    //             coefficient,
+    //         )
+    //     };
+    //     self.attributes_in_queues().put(key, attributes_in_queue);
+    // }
 }
