@@ -79,31 +79,32 @@ where
         };
         self.queues().put(key, created_queue);
     }
-    // pub fn add_attributes_to_queue (
-    //     &mut self,
-    //     key: &PublicKey,
-    //     queueKey: PublicKey,
-    //     name: String,
-    //     attr_type:String,
-    //     order:String,
-    //     priority:u64,
-    //     required:u32,
-    //     priorityInOrder:bool,
-    //     coefficient:u64,
-    // )  {
-    //     let attributes_in_queue = {
-    //         AttributesInQueue:: new(
-    //             key,
-    //             &queueKey,
-    //             &name,
-    //             attr_type,
-    //             order,
-    //             priority,
-    //             required,
-    //             priorityInOrder,
-    //             coefficient,
-    //         )
-    //     };
-    //     self.attributes_in_queues().put(key, attributes_in_queue);
-    // }
+    ///method for adding attributes to queu
+    pub fn add_attributes_to_queue (
+        &mut self,
+        key: &PublicKey,
+        QueueKey: PublicKey,
+        name: String,
+        typeAttribute:String,
+        order:String,
+        sortable:u64,
+        obligatory:u32,
+        priorityInOrder:bool,
+        coefficient:u64,
+    )  {
+        let attributes_in_queue = {
+            AttributesInQueue:: new(
+                key,
+                QueueKey,
+                &name,
+                typeAttribute,
+                order,
+                sortable,
+                obligatory,
+                priorityInOrder,
+                coefficient,
+            )
+        };
+        self.attributes_in_queues().put(key, attributes_in_queue);
+    }
 }
