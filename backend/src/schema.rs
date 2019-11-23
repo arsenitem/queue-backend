@@ -84,6 +84,34 @@ where
         &mut self,
         key: &PublicKey,
         QueueKey: PublicKey,
+        name: &String,
+        typeAttribute:&String,
+        order:&String,
+        sortable:u64,
+        obligatory:u32,
+        priorityInOrder:bool,
+        coefficient:u64,
+    )  {
+        let attributes_in_queue = {
+            AttributesInQueue:: new(
+                key,
+                QueueKey,
+                &name,
+                &typeAttribute,
+                &order,
+                sortable,
+                obligatory,
+                priorityInOrder,
+                coefficient,
+            )
+        };
+        self.attributes_in_queues().put(key, attributes_in_queue);
+    }
+    ///method for adding attributes to queu
+    pub fn add_profile (
+        &mut self,
+        key: &PublicKey,
+        QueueKey: PublicKey,
         name: String,
         typeAttribute:String,
         order:String,
@@ -97,8 +125,8 @@ where
                 key,
                 QueueKey,
                 &name,
-                typeAttribute,
-                order,
+                &typeAttribute,
+                &order,
                 sortable,
                 obligatory,
                 priorityInOrder,

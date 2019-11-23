@@ -31,6 +31,15 @@ impl PublicApi {
 
         Ok(first.name)
     }
+    fn get_queue_properties(state: &ServiceApiState, query: GetFirstQuery) -> api::Result<String> {
+        let snapshot = state.snapshot();
+        let schema = Schema::new(&snapshot);
+
+        let first = schema.attributes_in_queues();
+        
+
+        Ok(first.name)
+    }
     // //get queue by key
     // fn get_all_queus(state: &ServiceApiState, _: GetAllQueues) -> api::Result<String> {
     //     let snapshot = state.snapshot();
@@ -44,8 +53,8 @@ impl PublicApi {
     pub fn wire(builder: &mut ServiceApiBuilder) {
         builder
             .public_scope()
-            .endpoint("v1/queue_constructor/get_queue", Self::get_queue);
-            // .endpoint("vq/queue_constructor/get_first", Self::get_first);
+            .endpoint("v1/queue_constructor/get_queue", Self::get_queue)
+            .endpoint("vq/queue_constructor/get_queue_properties", Self::get_queue_properties);
     }
    
 }

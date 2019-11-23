@@ -61,9 +61,23 @@ message Profile {
     //rating
     uint64 rating = 5;
 }
+//participant anceta
+message CreateProfile {
+    //pk user
+    exonum.PublicKey user_key = 1;
+    //qk
+    exonum.PublicKey queue_key = 2;
+    //rating
+    uint64 rating = 3;
+}
 message ProfileAttributeValue {
     exonum.PublicKey key = 1;
     exonum.PublicKey attribute_key = 2;
     exonum.PublicKey  profile_key = 3;
     string  value = 4;
+}
+message SetProfileAttributeValue {
+    exonum.PublicKey attribute_key = 1;
+    exonum.PublicKey  profile_key = 2;
+    string  value = 3;
 }

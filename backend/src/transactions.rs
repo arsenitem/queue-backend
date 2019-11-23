@@ -78,6 +78,17 @@ pub struct AddAttributesToQueue {
     ///
     pub coefficient: u64,
 }
+// ///struct
+// #[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
+// #[exonum(pb = "proto::CreateProfile")]
+// pub struct CreateProfile {
+//     ///
+//     pub user_key: PublicKey,
+//     ///
+//     pub queue_key: PublicKey,
+//     ///
+//     pub rating: u64,
+// }
 /// Transaction group.
 #[derive(Serialize, Deserialize, Clone, Debug, TransactionSet)]
 pub enum ParticipantTransactions {
@@ -115,6 +126,18 @@ impl CreateQueue {
         Message::sign_transaction(Self { name }, SERVICE_ID, *pk, sk)
     }
 }
+// impl CreateProfile {
+//     #[doc(hidden)]
+//     pub fn sign(
+//         pk: &PublicKey,       
+//         user_key: PublicKey,
+//         queue_key: PublicKey,
+//         rating: u64,
+//         sk: &SecretKey,
+//     ) -> Signed<RawTransaction> {
+//         Message::sign_transaction(Self { user_key, queue_key, rating }, SERVICE_ID, *pk, sk)
+//     }
+// }
 impl Transaction for CreateQueue {
     fn execute(&self, context: TransactionContext) -> ExecutionResult {
         
@@ -143,10 +166,26 @@ impl Transaction for AddAttributesToQueue {
 
         let key = &context.author();
 
-        if schema.queue(key).is_none() {
+        if !schema.queue(key).is_none() {
+            let QueueKey = self.QueueKey;
             let name = &self.name;
-
-            schema.add_queue(key, name);
+            let typeAttribute = &self.typeAttribute;
+            let order = &self.order;
+            let sortable = self.sortable;
+            let obligatory = self.obligatory;
+            let priorityInOrder = self.priorityInOrder;
+            let coefficient = self.coefficient;
+            schema.add_attributes_to_queue(
+                key,
+                QueueKey,
+                name,
+                typeAttribute,
+                order,
+                sortable,
+                obligatory,
+                priorityInOrder,
+                coefficient
+            );
 
             Ok(())
         } else {
@@ -155,3 +194,13 @@ impl Transaction for AddAttributesToQueue {
      
     }
 }
+// impl Transaction for CreateProfile {
+//     fn execute(&self, context: TransactionContext) -> ExecutionResult {
+        
+    
+//       ////
+//             Ok(())
+      
+     
+//     }
+// }
