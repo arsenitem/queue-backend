@@ -21,7 +21,7 @@ use serde_json::json;
 
 /// Wallet information stored in the database.
 #[derive(Clone, Debug, ProtobufConvert)]
-#[exonum(pb = "proto::Wallet", serde_pb_convert)]
+#[exonum(pb = "proto::Queue", serde_pb_convert)]
 pub struct Wallet {
     /// `PublicKey` of the queue.
     pub pub_key: PublicKey,

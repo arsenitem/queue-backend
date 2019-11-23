@@ -41,6 +41,7 @@ message Anceta {
 
     // history len
     uint64 history_len = 4;
+
     // `Hash` of the transactions history.
     exonum.Hash history_hash = 5;
 }
@@ -63,16 +64,4 @@ message AddAnceta {
     exonum.PublicKey key = 1;
     //
     string attrs = 2;
-}
-
-// Buy an iphone
-message Buy {
-    // `PublicKey` of pipe type.
-    exonum.PublicKey key = 1;
-}
-
-// Remove from queue
-message Remove {
-    // `PublicKey` of pipe type.
-    exonum.PublicKey key = 1;
 }
