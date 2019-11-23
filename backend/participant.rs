@@ -8,7 +8,9 @@ pub struct Participant {
     /// key
     pub key: PublicKey,
     ///json string
-    pub serde_json: String,   
+    pub serde_json: String,  
+    ///key of the queue
+    pub queue_key: PublicKey,
     /// took part
     pub took_part: bool,
     ///got a prize
@@ -25,7 +27,8 @@ impl Participant {
     /// Creates new participant
     pub fn new(
         &key: &PublicKey,  
-        serde_json: &str,      
+        serde_json: &str,
+        &queue_key: &PublicKey,      
         took_part: bool,
         got_a_prize: bool,        
         history_len: u64,
@@ -34,6 +37,7 @@ impl Participant {
         Self {
             key,
             serde_json,
+            queue_key,
             took_part,
             got_a_prize,            
             history_len,
@@ -47,6 +51,7 @@ impl Participant {
     ) -> Self {
         &self.key,
         self.serde_json,
+        &self.queue_key,
         true,
         self.get_a_prize,        
         self.history_len + 1,
@@ -61,6 +66,7 @@ impl Participant {
         Self::new(
             &self.key,
             self.serde_json,
+            &self.queue_key,
             true,
             true,            
             self.history_len + 1,

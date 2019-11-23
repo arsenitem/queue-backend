@@ -24,7 +24,7 @@ use serde_json::json;
 #[exonum(pb = "proto::Wallet", serde_pb_convert)]
 pub struct Wallet {
     /// `PublicKey` of the queue.
-    pub pub_key: PublicKey,
+    pub queue_key: PublicKey,
     /// Name of the queue.
     pub name: String,       
     /// `Hash` of the transactions history.
@@ -44,7 +44,7 @@ pub struct Wallet {
 impl Wallet {
     /// Create new queue.
     pub fn new(
-        &pub_key: &PublicKey,
+        &queue_key: &PublicKey,
         serde_json: &str,
         name: &str,
         created: u64,
@@ -54,7 +54,7 @@ impl Wallet {
         &history_hash: &Hash,
     ) -> Self {
         Self {
-            pub_key,
+            queue_key,
             name: name.to_owned(),
             serde_json,
             history_len,
