@@ -57,7 +57,7 @@ impl PublicApi {
         builder
             .public_scope()
             .endpoint("v1/queue_constructor/get_queue", Self::get_queue)
-            .endpoint("vq/queue_constructor/get_queue_properties", Self::get_queue_properties);
+            .endpoint("v1/queue_constructor/get_queue_properties", Self::get_queue_properties);
     }
    
 }
