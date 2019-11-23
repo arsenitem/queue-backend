@@ -9,6 +9,24 @@ const TX_TRANSFER_ID = 0
 const TX_ISSUE_ID = 1
 const TX_WALLET_ID = 2
 const TABLE_INDEX = 0
+
+function TransferTransaction(publicKey) {
+  return Exonum.newTransaction({
+    author: publicKey,
+    service_id: SERVICE_ID,
+    message_id: TX_TRANSFER_ID,
+    schema: proto.exonum.queue_constructor.AttributesInQueue.CreateQueue
+  })
+}
+
+/*
+const TRANSACTION_URL = '/api/explorer/v1/transactions'
+const PER_PAGE = 10
+const SERVICE_ID = 128
+const TX_TRANSFER_ID = 0
+const TX_ISSUE_ID = 1
+const TX_WALLET_ID = 2
+const TABLE_INDEX = 0
 const Wallet = Exonum.newType(proto.exonum.examples.cryptocurrency_advanced.Wallet)
 
 function TransferTransaction(publicKey) {
@@ -49,7 +67,7 @@ function getTransaction(transaction, publicKey) {
 
   return new IssueTransaction(publicKey)
 }
-
+*/
 module.exports = {
   install(Vue) {
     Vue.prototype.$blockchain = {
@@ -61,7 +79,7 @@ module.exports = {
         return Exonum.randomUint64()
       },
 
-      createWallet(keyPair, name) {
+      /*createWallet(keyPair, name) {
         // Describe transaction
         const transaction = new CreateTransaction(keyPair.publicKey)
 
@@ -102,8 +120,8 @@ module.exports = {
         // Send transaction into blockchain
         return transaction.send(TRANSACTION_URL, data, keyPair.secretKey)
       },
-
-      getWallet(publicKey) {
+      */
+      /*getWallet(publicKey) {
         return axios.get('/api/services/configuration/v1/configs/actual').then(response => {
           // actual list of public keys of validators
           const validators = response.data.config.validator_keys.map(validator => {
@@ -185,7 +203,7 @@ module.exports = {
               })
             })
         })
-      },
+      },*/
 
       getBlocks(latest) {
         const suffix = !isNaN(latest) ? '&latest=' + latest : ''
