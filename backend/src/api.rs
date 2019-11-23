@@ -21,9 +21,6 @@ pub struct GetFirstQuery {
 pub struct PublicApi;
 
 impl PublicApi {
-    /// Endpoint for getting a single wallet.
-   
-   
     /// Wires the above endpoint to public scope of the given `ServiceApiBuilder`.
     pub fn wire(builder: &mut ServiceApiBuilder) {
         builder

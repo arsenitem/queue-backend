@@ -54,8 +54,6 @@ impl From<Error> for ExecutionError {
 #[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
 #[exonum(pb = "proto::CreateQueue")]
 pub struct CreateQueue {
-    /// `PublicKey` of participant.
-    pub key: PublicKey,
     /// ads
     pub name: String,
 }
@@ -71,11 +69,10 @@ impl CreateQueue {
     #[doc(hidden)]
     pub fn sign(
         pk: &PublicKey,
-        &key: &PublicKey,
         name: String,
         sk: &SecretKey,
     ) -> Signed<RawTransaction> {
-        Message::sign_transaction(Self { key, name }, SERVICE_ID, *pk, sk)
+        Message::sign_transaction(Self {name }, SERVICE_ID, *pk, sk)
     }
 }
 impl Transaction for CreateQueue {
@@ -84,7 +81,7 @@ impl Transaction for CreateQueue {
     
         let mut schema = Schema::new(context.fork());
 
-        let key = &self.key;
+        let key = &context.author();
 
         if schema.queue(key).is_none() {
             let name = &self.name;

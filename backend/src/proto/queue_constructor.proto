@@ -24,6 +24,7 @@ message Queue {
 
 ///
 message CreateQueue {
+    ///
     string name = 1;
 }
 
