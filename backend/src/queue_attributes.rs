@@ -25,44 +25,44 @@ pub struct AttributesInQueue {
     ///pub key
     pub key: PublicKey,
     /// `PublicKey` of the queue.
-    pub queueKey: PublicKey,
+    pub QueueKey: PublicKey,
     /// Name of the field.
     pub name: String,   
     /// type    
-    pub attr_type: String,  
+    pub typeAttribute: String,  
     /// order
     pub order: String,
     ///priority 
-    pub priority: u64,
+    pub sortable: u64,
     ///priority vector
-    pub priorityInOrder: bool,
+    pub obligatory: u32,
     /// coefficient
-    pub coefficient: u64,
+    pub priorityInOrder: bool,
     ///required or not
-    pub required: u32,
+    pub coefficient: u64,
 }
 
 impl AttributesInQueue {
     /// Create new queue.
     pub fn new(
         &key: &PublicKey,     
-        queueKey: PublicKey,        
+        QueueKey: PublicKey,        
         name: &str,
-        attr_type: String,
+        typeAttribute: String,
         order: String,
-        priority: u64,
-        required: u32,
+        sortable: u64,
+        obligatory: u32,
         priorityInOrder: bool,
         coefficient: u64,
     ) -> Self {
         Self {
             key,
-            queueKey,
+            QueueKey,
             name: name.to_owned(),
-            attr_type,
+            typeAttribute,
             order,
-            priority,
-            required,
+            sortable,
+            obligatory,
             priorityInOrder,
             coefficient,
         }

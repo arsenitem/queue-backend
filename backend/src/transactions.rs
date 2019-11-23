@@ -62,17 +62,17 @@ pub struct CreateQueue {
 #[exonum(pb = "proto::AddAttributesToQueue")]
 pub struct AddAttributesToQueue {
     ///
-    pub queueKey: PublicKey,
+    pub QueueKey: PublicKey,
     ///
     pub name: String,
     ///
-    pub attr_type: String,
+    pub typeAttribute: String,
     ///
     pub order: String,
     ///
-    pub priority: u64,
+    pub sortable: u64,
     ///
-    pub required: u32 ,
+    pub obligatory: u32 ,
     ///
     pub priorityInOrder: bool,
     ///
@@ -91,17 +91,17 @@ impl AddAttributesToQueue {
     #[doc(hidden)]
     pub fn sign(
         pk: &PublicKey,
-        queueKey: PublicKey,
+        QueueKey: PublicKey,
         name: String,
-        attr_type:String,
+        typeAttribute:String,
         order:String,
-        priority:u64,
-        required:u32,
+        sortable:u64,
+        obligatory:u32,
         priorityInOrder:bool,
         coefficient:u64,
         sk: &SecretKey,
     ) -> Signed<RawTransaction> {
-        Message::sign_transaction(Self { queueKey,name,attr_type, order, priority, required, priorityInOrder, coefficient}, SERVICE_ID, *pk, sk)
+        Message::sign_transaction(Self { QueueKey,name,typeAttribute, order, sortable, obligatory, priorityInOrder, coefficient}, SERVICE_ID, *pk, sk)
     }
 }
 

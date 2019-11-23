@@ -30,22 +30,22 @@ message CreateQueue {
 
 message AttributesInQueue {
     exonum.PublicKey key = 1;
-    exonum.PublicKey queueKey = 2;
+    exonum.PublicKey QueueKey = 2;
     string name = 3;
-    string attr_type = 4;
+    string typeAttribute = 4;
     string order = 5;
-    uint64 priority = 6;
-    uint32 required = 7;
+    uint64 sortable = 6;
+    uint32 obligatory = 7;
     bool priorityInOrder = 8;
     uint64 coefficient = 9;
 }
 message AddAttributesToQueue {
-    exonum.PublicKey queueKey = 1;
+    exonum.PublicKey QueueKey = 1;
     string name = 2;
-    string attr_type = 3;
+    string typeAttribute = 3;
     string order = 4;
-    uint64 priority = 5;
-    uint32 required = 6;
+    uint64 sortable = 5;
+    uint32 obligatory = 6;
     bool priorityInOrder = 7;
     uint64 coefficient = 8;
 }
@@ -56,9 +56,9 @@ message Profile {
 
     //pk user
     exonum.PublicKey user_key = 2;
-
+    //qk
     exonum.PublicKey queue_key = 3;
-
+    //rating
     uint64 rating = 5;
 }
 message ProfileAttributeValue {
