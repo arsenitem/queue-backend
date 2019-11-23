@@ -57,6 +57,18 @@ pub struct CreateQueue {
     /// ads
     pub name: String,
 }
+///struct
+#[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
+#[exonum(pb = "proto::AddAttributesToQueue")]
+pub struct AddAttributesToQueue {
+    pub name: String;
+    pub type: String;
+    pub order: String;
+    pub priority: uint64;
+    pub required: uint32 ;
+    pub priorityInOrder: uint32 ;
+    pub coefficient: uint32;
+}
 /// Transaction group.
 #[derive(Serialize, Deserialize, Clone, Debug, TransactionSet)]
 pub enum ParticipantTransactions {
