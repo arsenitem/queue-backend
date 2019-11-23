@@ -13,7 +13,8 @@ use crate::queue::Queue;
 /// Describes the query parameters for the `get_wallet` endpoint.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub struct GetFirstQuery {
-
+    ///key to get queue
+    pub pub_key: PublicKey,
 }
 
 /// Public service API description.
@@ -21,11 +22,21 @@ pub struct GetFirstQuery {
 pub struct PublicApi;
 
 impl PublicApi {
+    //get queue by key
+    fn get_queue(state: &ServiceApiState, query: GetFirstQuery) -> api::Result<String> {
+        let snapshot = state.snapshot();
+        let schema = Schema::new(&snapshot);
+
+        let first = schema.queue(&query.pub_key).unwrap();
+
+        Ok(first.key.to_hex())
+    }
     /// Wires the above endpoint to public scope of the given `ServiceApiBuilder`.
     pub fn wire(builder: &mut ServiceApiBuilder) {
         builder
-            .public_scope();
-            // .endpoint("v1/queue_constructor/info", Self::participant_info)
+            .public_scope()
+            .endpoint("v1/queue_constructor/get_queue", Self::get_queue);
             // .endpoint("vq/queue_constructor/get_first", Self::get_first);
     }
+   
 }
