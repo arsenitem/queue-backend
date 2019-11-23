@@ -22,10 +22,10 @@ message AttributesInQueue {
     bool priorityInOrder = 8;
     uint64 coefficient = 9;
 }
-message ProfileAttributes {
-    exonum.PublicKey  key = 1;
-    exonum.PublicKey  profile_key = 2;
-    exonum.PublicKey  attribute = 3;
+message ProfileAttributeValue {
+    exonum.PublicKey key = 1;
+    exonum.PublicKey attribute_key = 2;
+    exonum.PublicKey  profile_key = 3;
     string  value = 4;
 }
 //participant anceta
@@ -49,12 +49,11 @@ message User {
     string name = 2;
 }
 message CreateUser {
-    string name = 1;
-}
-message CreateQueue {
+    exonum.PublicKey key = 1;
     string name = 2;
 }
 message CreateQueue {
+    exonum.PublicKey key = 1;
     string name = 2;
 }
 message CreateProfile {
@@ -62,4 +61,14 @@ message CreateProfile {
 
     exonum.PublicKey queue_key = 2;
 
+}
+message AddAttributesToQueue {
+    exonum.PublicKey QueueKey = 1;
+    string name = 2;
+    string type = 3;
+    string order = 4;
+    uint64 priority = 5;
+    uint32 required = 6;
+    bool priorityInOrder = 7;
+    uint64 coefficient = 8;
 }

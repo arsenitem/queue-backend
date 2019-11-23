@@ -27,43 +27,17 @@ pub struct Queue {
     pub queue_key: PublicKey,
     /// Name of the queue.
     pub name: String,   
-    /// field
-    pub type: u32;    
-    /// `Hash` of the transactions history.    
-    pub history_hash: Hash,
-    ///Json string
-    pub serde_json: String,
-    ///Creation date  
-    pub created: u64,
-     ///Opening date  
-     pub opened: u64,
-      ///Closing date  
-    pub closed: u64,   
-    /// Length of the transactions history.
-    pub history_len: u64,
 }
 
 impl Queue {
     /// Create new queue.
     pub fn new(
-        &queue_key: &PublicKey,
-        serde_json: &str,
-        name: &str,
-        created: u64,
-        opened: u64,
-        closed: u64,
-        history_len: u64,
-        &history_hash: &Hash,
+        &queue_key: &PublicKey,     
+        name: &str,     
     ) -> Self {
         Self {
             queue_key,
             name: name.to_owned(),
-            serde_json,
-            history_len,
-            history_hash,
-            created,
-            opened,
-            closed,
         }
     }
    
