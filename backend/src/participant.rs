@@ -14,9 +14,7 @@ pub struct Participant {
     /// took part
     pub took_part: bool,
     ///got a prize
-    pub got_a_prize: bool,
-    /// Removed
-    pub removed: bool,
+    pub got_a_prize: bool,   
     /// Length of the transactions history.
     pub history_len: u64,
     /// `Hash` of the transactions history.
