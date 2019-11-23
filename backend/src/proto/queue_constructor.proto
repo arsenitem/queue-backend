@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package queue_constructor;
+
+import "helpers.proto";
+
+import "google/protobuf/timestamp.proto";
+
+// Queue
+message Queue {
+    // `PublicKey`
+    exonum.PublicKey key = 1;
+    
+    //JSON attrs
+    string attributes = 2;
+
+    google.protobuf.Timestamp creation_date = 3;
+
+    google.protobuf.Timestamp open_date = 4;
+
+    google.protobuf.Timestamp close_date = 5;
+
+    string name = 6;
+
+    // history len
+    uint64 history_len = 7;
+    // `Hash` of the transactions history.
+    exonum.Hash history_hash = 8;
+
+}
+//participant anceta
+message Anceta {
+    //pk
+    exonum.PublicKey key = 1;
+
+    //pk
+    exonum.PublicKey participant_key = 2;
+
+    //user attrs
+    string attributes = 3;
+
+    // history len
+    uint64 history_len = 4;
+    // `Hash` of the transactions history.
+    exonum.Hash history_hash = 5;
+}
+
+message Participant {
+    // `PublicKey`
+    exonum.PublicKey key = 1;
+}
+// Create queue
+message AddQueue {
+    // `PublicKey` of queue.
+    exonum.PublicKey key = 1;
+    // attrs
+    string attributes = 2;
+
+    string name = 3;
+}
+message AddAnceta {
+    //pk
+    exonum.PublicKey key = 1;
+    //
+    string attrs = 2;
+}
+
+// Buy an iphone
+message Buy {
+    // `PublicKey` of pipe type.
+    exonum.PublicKey key = 1;
+}
+
+// Remove from queue
+message Remove {
+    // `PublicKey` of pipe type.
+    exonum.PublicKey key = 1;
+}
