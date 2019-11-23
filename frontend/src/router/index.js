@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import AuthPage from '../pages/Auth.vue'
+import CreateQueuePage from '../pages/CreateQueue.vue'
 import WalletPage from '../pages/Wallet.vue'
 import BlockchainPage from '../pages/Blockchain.vue'
 import BlockPage from '../pages/Block.vue'
@@ -12,8 +12,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: AuthPage
+      name: 'createQueue',
+      component: CreateQueuePage
     },
     {
       path: '/user',

@@ -1,4 +1,4 @@
-import Vue from 'vue/dist/vue'
+/*import Vue from 'vue/dist/vue'
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 import * as Blockchain from '../src/plugins/blockchain.js'
@@ -169,3 +169,4 @@ describe('Interaction with blockchain', () => {
       )
   })
 })
+*/

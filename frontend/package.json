@@ -1,15 +1,15 @@
 {
-  "name": "cryptocurrency-demo",
+  "name": "queue",
   "version": "1.0.0",
-  "description": "Cryptocurrency demo",
-  "author": "Exonum Team <exonum@bitfury.com>",
-  "license": "Apache-2.0",
+  "description": "Queue demostand",
+  "author": "queue team",
+  "license": "MIT",
   "scripts": {
     "proto": "pbjs --keep-case -t static-module ../../../ExonumBlockChainT/blockchain/exonum/exonum/src/proto/schema/exonum/protocol.proto ../backend/src/proto/queue_constructor.proto -o ./proto/stubs.js",
     "lint": "eslint --ext .js,.vue src test",
     "compile": "webpack",
     "test": "jest",
-    "build": "npm run proto && npm run lint && npm run compile && npm run test",
+    "build": "npm run proto && npm run compile",
     "start": "node server.js"
   },
   "jest": {
