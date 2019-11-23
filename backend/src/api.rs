@@ -35,7 +35,7 @@ impl PublicApi {
 
         let first = schema.queue(&query.pub_key).unwrap();
 
-        Ok(first.key.to_hex())
+        Ok(first.name)
     }
     // //get queue by key
     // fn get_all_queus(state: &ServiceApiState, _: GetAllQueues) -> api::Result<String> {
