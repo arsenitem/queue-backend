@@ -27,18 +27,19 @@ pub struct Queue_fields {
     pub queue_key: PublicKey,
     /// Name of the field.
     pub name: String,   
-    /// type    
-    pub type: String,  
+    /// typeAttribute    
+    pub typeAttribute: String,  
     /// order
-    pub order: String,
-    //priority 
-    pub priority: u64,
+    pub order: u64,
+    //sortable 
+    pub sortable: bool,
+    ///required or not
+    pub obligatory: bool,
     ///priority vector
     pub priorityInOrder: bool,
     /// coefficient
-    pub coefficient: u64;
-    ///required or not
-    pub required: u32,
+    pub coefficient: u32;
+    
     /// `Hash` of the transactions history.    
     //pub history_hash: Hash,
     ///Json string
@@ -56,13 +57,20 @@ pub struct Queue_fields {
 impl Queue_attributes {
     /// Create new queue.
     pub fn new(
-        &queue_key: &PublicKey,        
-        name: &str,
-        type: u32,
-        order: u32,
-        priority: u32,
-        priority_vector: u32,
-        type: u32,
+        &queue_key: &PublicKey,  
+        //имя      
+        name: String,
+        //тип
+        typeAttribute: String,
+        //порядок отображения полей
+        order: u64,
+        //сортируется ли (ex priority)
+        sortable: bool,
+        //обязательность заполнения (ex required)
+        obligatory: bool,
+        //направление сортировки (false на возрастание) 
+        priorityInOrder: bool,
+        //уровень сортировки
         coefficient: u32,
        // history_len: u64,
         //&history_hash: &Hash,
@@ -70,11 +78,11 @@ impl Queue_attributes {
         Self {
             queue_key,
             name: name.to_owned(),
-            type,
+            typeAttribute,
             order,
-            priority,
-            priority_vector,
-            type,
+            sortable,
+            obligatory,
+            priorityInOrder,            
             coefficient,    
         }
     }

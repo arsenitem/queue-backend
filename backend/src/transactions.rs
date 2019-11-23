@@ -67,13 +67,13 @@ pub struct CreateQueue {
 #[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
 #[exonum(pb = "proto::AddAttributesToQueue")]
 pub struct AddAttributesToQueue {
-    pub name: String;
-    pub type: String;
-    pub order: String;
-    pub priority: uint64;
-    pub required: uint32 ;
-    pub priorityInOrder: uint32 ;
-    pub coefficient: uint32;
+    pub name: String,
+    pub  typeAttribute: String,
+    pub order: Strin,
+    pub sortable: uint64,
+    pub obligatory: uint32,
+    pub priorityInOrder: uint32,
+    pub coefficient: uint32,
 }
 /// Transaction group.
 #[derive(Serialize, Deserialize, Clone, Debug, TransactionSet)]
@@ -87,15 +87,15 @@ impl AddAttributesToQueue{
     pub fn sign(
         pk: &PublicKey,
         name: String,
-        type: String,
-        order: String,
-        priority: u64,
-        requiredL u32,
-        priorityInOrder: u32,
+        typeAttribute: String,
+        order: u64,
+        sortable: bool,
+        obligatory: bool,
+        priorityInOrder: bool,
         coefficient: u32,
         sk: &SecretKey,
     ) -> Signed<RawTransaction>{
-        Message::sign_transaction(Self {name, type, order, priority, required, priorityInOrder, coefficient}, SERVICE_ID, *pk, sk)
+        Message::sign_transaction(Self {name,  typeAttribute, order, sortable, obligatory, priorityInOrder, coefficient}, SERVICE_ID, *pk, sk)
     }    
 }
 impl Transaction for AddAttributesToQueue{
@@ -104,13 +104,13 @@ impl Transaction for AddAttributesToQueue{
         let key = &context.author();
         if schema.queue_attributes(key).is_none() {
             let name = &self.name;
-            let type = &self.type;
+            let  typeAttribute = &self. typeAttribute;
             let order = &self.order;
-            let priority = &self.priority;
-            let required = &self.required;
+            let sortable = &self.sortable;
+            let obligatory = &self.obligatory;
             let priorityInOrder = &self.priorityInOrder;
             let coefficient = &self.coefficient;
-            schema.add_attributes(key, name, type, order, priority, required, priorityInOrder, coefficient);
+            schema.add_attributes(key, name, typeAttribute, order, sortable, obligatory, priorityInOrder, coefficient);
 
             Ok(())
         } else {
