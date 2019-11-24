@@ -50,7 +50,7 @@
                         </div>
                         <a class="waves-effect waves-light btn" v-on:click="transactionSaveQueue" ><i class="material-icons left">add_circle_outline</i>Создать тестовую очередь</a>
                         <a class="waves-effect waves-light btn" v-on:click="transactionGetQueue" ><i class="material-icons left">add_circle_outline</i>Вернуть мне очередь по ключу</a>
-                        <a class="waves-effect waves-light btn" v-on:click=" transactionSaveTestParameterQueue" ><i class="material-icons left">add_circle_outline</i>Создать атрибут очереди</a>
+                        <a class="waves-effect waves-light btn" v-on:click="transactionSaveTestParameterQueue" ><i class="material-icons left">add_circle_outline</i>Создать атрибут очереди</a>
                     </div>
                 </div>             
             </div>
@@ -243,9 +243,9 @@
             transactionSaveTestParameterQueue(){
                 var keyPair = Exonum.keyPair();
                 const transaction = new CreateTransactionUniversale(keyPair.publicKey, 1, proto.queue_constructor.AddAttributesToQueue);
-
-                dataParam = {
-                    queueKey: $("#key_queque").val(),
+                let key = { data: Exonum.hexadecimalToUint8Array($("#key_queque").val()) };
+                let dataParam = {
+                    queueKey: key,
                     name: "Тестовый параметр",
                     typeAttribute: "string",
                     order: 1,
