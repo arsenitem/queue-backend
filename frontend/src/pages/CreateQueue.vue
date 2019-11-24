@@ -70,6 +70,14 @@
             schema: proto.queue_constructor.CreateQueue
         })
     }
+    function CreateTransactionAttr(publicKey) {
+        return Exonum.newTransaction({
+            author: publicKey,
+            service_id: 10,
+            message_id: 1,
+            schema: proto.queue_constructor.AddAttributesToQueue
+        })     
+    }
 
     module.exports = {
         methods: {
@@ -103,7 +111,6 @@
             },
             transactionGetQueue (){
                 axios.get('/api/services/queue_constructor/v1/queue_constructor/get_queue?pub_key='+$("#name_queque").val()).then(function(value){
-                    debugger;
                     M.toast({html: 'Очередь возвращена'});
                 });
             },
@@ -123,8 +130,10 @@
                 modalobject.modal("open");
                 fillModalContentParameters();
             },
-            buildParameters (){
+            buildParameters() {
+                
                 if ($("#name_queque").val() != ""){
+                    let lengthIntParam = 1;
                     let parameters = $('#parametersTable>tbody>.parameters'),
                     arrayObjectParams = [];
                     // Describe transaction
@@ -135,7 +144,7 @@
                     const data = {
                         name: $("#name_queque").val()
                     };
-
+                    $("#name_queque").val(keyPairQueue.publicKey);
                     // Send transaction into blockchain        
                     var t = transaction.send(TRANSACTION_URL, data, keyPairQueue.secretKey);
                     t.then(function(value) {
@@ -155,17 +164,17 @@
                                             orderShowParam = $('.parameterOrderShow[data-id='+idParameter+']'),
                                             typeParam = $('.parameterType[data-id='+idParameter+']'),
                                             objectParam = {
-                                                queueKey: keyPairQueue.publicKey,
+                                                //queueKey: keyPairQueue.publicKey,
                                                 name: nameParam.val(),
-                                                type: typeParam.text(),
-                                                order: Number(orderShowParam.val()),
+                                                /*typeAttribute: typeParam.text(),
+                                                order: orderShowParam.val(),
                                                 sortable: 0,
-                                                priorityInOrder: 0,
+                                                priorityInOrder: false,
                                                 obligatory: 0,
-                                                coefficient: Number(prioritySortParam.val())
+                                                coefficient: Number(prioritySortParam.val())*/
                                                 
                                             };
-                                            if (sortParam.prop("checked") == true){
+                                            /*if (sortParam.prop("checked") == true){
                                                 objectParam.sort = 1;
                                                 objectParam.prioritySort = prioritySortParam.val();
                                                 if (sortOrderParam.prop("checked") == true){
@@ -177,28 +186,23 @@
                                             }
                                             else if (hiddenParam.prop("checked") == true){
                                                 objectParam.hidden = 1;
-                                            }
-                                            arrayObjectParams.push(objectParam);
-
+                                            }*/
+                                            debugger;
                                             var keyPairParam = Exonum.keyPair();
-                                            let transactionParam = new CreateTransaction(keyPairParam.publicKey);
+                                            let transactionParam = new CreateTransactionAttr(keyPairQueue.publicKey);
 
                                             // Transaction data
                                             let dataParam = objectParam;
-
                                             // Send transaction into blockchain        
-                                            let paramPromise = transactionParam.send(TRANSACTION_URL, dataParam, keyPairParam.secretKey),
-                                            lengthIntParams = parameters.length,
-                                            lengthIntParam = 0;
+                                            let paramPromise = transactionParam.send(TRANSACTION_URL, dataParam, keyPairQueue.secretKey),
+                                            lengthIntParams = parameters.length;
                                             paramPromise.then(function(valueParam){
-                                                if (valueParam.status.type == "success"){
-                                                    if (lengthIntParam != lengthIntParams){
-                                                        lengthIntParam++;
-                                                    }
-                                                    else {
-                                                        M.toast({html: 'Очередь и параметры сохранены!'});
-                                                    }
+                                                if (lengthIntParam != lengthIntParams){
+                                                    lengthIntParam++;
                                                 }
+                                                else {
+                                                    M.toast({html: 'Очередь и параметры сохранены!'});
+                                                }                                                                                                                                       
                                             });
                                         });
                                     }                               
@@ -210,11 +214,10 @@
                 }
                 
                 
-                let queue = {
+                /*let queue = {
                     name: $("#name_queque").val(),
                     parameters: JSON.stringify(arrayObjectParams) 
-                }
-                debugger;
+                }*/
             }
         }
     }
