@@ -237,7 +237,6 @@ impl Transaction for CreateProfile {
 impl Transaction for SetProfileAttributeValue {
     fn execute(&self, context: TransactionContext) -> ExecutionResult {
         
-    
         let mut schema = Schema::new(context.fork());
 
         let key = &context.author();

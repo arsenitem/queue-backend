@@ -40,14 +40,14 @@ message AttributesInQueue {
     uint64 coefficient = 9;
 }
 message AddAttributesToQueue {
-    //exonum.PublicKey QueueKey = 1;
-    string name = 1;
-    /*string typeAttribute = 3;
+    exonum.PublicKey QueueKey = 1;
+    string name = 2;
+    string typeAttribute = 3;
     string order = 4;
     uint64 sortable = 5;
     uint32 obligatory = 6;
     bool priorityInOrder = 7;
-    uint64 coefficient = 8;*/
+    uint64 coefficient = 8;
 }
 //participant anceta
 message Profile {
