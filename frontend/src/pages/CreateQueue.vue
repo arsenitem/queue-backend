@@ -36,13 +36,23 @@
                                 <tbody>                         
                                 </tbody>
                             </table>
-                        </div>
-                        <a class="waves-effect waves-light btn" v-on:click="transactionSaveQueue" ><i class="material-icons left">add_circle_outline</i>Создать очередь</a>
-                        <a class="waves-effect waves-light btn" v-on:click="transactionGetQueue" ><i class="material-icons left">add_circle_outline</i>Вернуть мне очередь по ключу</a>
+                        </div>      
                         <a class="waves-effect waves-light btn" v-on:click="createCustomModal" ><i class="material-icons left">add_circle_outline</i>Добавить параметр</a>
                         <a class="waves-effect waves-light btn" v-on:click="buildParameters"><i class="material-icons left">play_circle_filled</i>Создать очередь</a>
                     </form>
-                </div>               
+                </div>  
+                <div class="row">
+                    <h3>Кнопки для тестирования</h3>
+                    <div class=" col s12">
+                        <div class="input-field col s12 xl4">
+                            <input placeholder="Пусто" id="key_queque" type="text" class="validate">
+                            <label for="key_queque">Ключ очереди</label>
+                        </div>
+                        <a class="waves-effect waves-light btn" v-on:click="transactionSaveQueue" ><i class="material-icons left">add_circle_outline</i>Создать тестовую очередь</a>
+                        <a class="waves-effect waves-light btn" v-on:click="transactionGetQueue" ><i class="material-icons left">add_circle_outline</i>Вернуть мне очередь по ключу</a>
+                        <a class="waves-effect waves-light btn" v-on:click=" transactionSaveTestParameterQueue" ><i class="material-icons left">add_circle_outline</i>Создать атрибут очереди</a>
+                    </div>
+                </div>             
             </div>
         </div>
     </div> 
@@ -79,41 +89,17 @@
         })     
     }
 
+    function CreateTransactionUniversale(publicKey, message_id, schema) {
+        return Exonum.newTransaction({
+            author: publicKey,
+            service_id: 10,
+            message_id: message_id,
+            schema: schema
+        })     
+    }
+
     module.exports = {
-        methods: {
-            transactionSaveQueue() {
-
-                // Describe transaction
-                var keyPair = Exonum.keyPair();
-                const transaction = new CreateTransaction(keyPair.publicKey);
-
-                // Transaction data
-                const data = {
-                    name: "Очередь 1"
-                };
-
-                $("#name_queque").val(keyPair.publicKey);
-                // Send transaction into blockchain        
-                var t = transaction.send(TRANSACTION_URL, data, keyPair.secretKey);
-                t.then(function(value) {
-                        $.ajax({
-                            url: 'http://127.0.0.1:8280'+TRANSACTION_URL,
-                            data: {hash: value},
-                            success: function(result){
-                                if (result.status.type == "success"){
-                                    M.toast({html: 'Очередь сохранена!'});
-                                }                               
-                            }
-                        });
-                    }, function(reason) {
-                    // отказ
-                });
-            },
-            transactionGetQueue (){
-                axios.get('/api/services/queue_constructor/v1/queue_constructor/get_queue?pub_key='+$("#name_queque").val()).then(function(value){
-                    M.toast({html: 'Очередь возвращена'});
-                });
-            },
+        methods: {          
             createCustomModal() {
                 let string = '<div id="custom-modal" class="modal">'
                     +'<div class="modal-content">'
@@ -218,6 +204,58 @@
                     name: $("#name_queque").val(),
                     parameters: JSON.stringify(arrayObjectParams) 
                 }*/
+            },
+
+            /* Методы для тестирования */
+            transactionSaveQueue() {
+                // Describe transaction
+                var keyPair = Exonum.keyPair();
+                const transaction = new CreateTransaction(keyPair.publicKey);
+
+                // Transaction data
+                const data = {
+                    name: "Очередь 1"
+                };
+
+                $("#key_queque").val(keyPair.publicKey);
+                // Send transaction into blockchain        
+                var t = transaction.send(TRANSACTION_URL, data, keyPair.secretKey);
+                t.then(function(value) {
+                        $.ajax({
+                            url: 'http://127.0.0.1:8280'+TRANSACTION_URL,
+                            data: {hash: value},
+                            success: function(result){
+                                if (result.status.type == "success"){
+                                    M.toast({html: 'Очередь сохранена!'});
+                                }                               
+                            }
+                        });
+                    }, function(reason) {
+                    // отказ
+                });
+            },
+            transactionGetQueue (){
+                axios.get('/api/services/queue_constructor/v1/queue_constructor/get_queue?pub_key='+$("#key_queque").val()).then(function(value){
+                    M.toast({html: 'Очередь возвращена'});
+                });
+            },
+
+            transactionSaveTestParameterQueue(){
+                var keyPair = Exonum.keyPair();
+                const transaction = new CreateTransactionUniversale(keyPair.publicKey, 1, proto.queue_constructor.AddAttributesToQueue);
+
+                dataParam = {
+                    queueKey: $("#key_queque").val(),
+                    name: "Тестовый параметр",
+                    typeAttribute: "string",
+                    order: 1,
+                    sortable: 0,
+                    priorityInOrder: false,
+                    obligatory: 0,
+                    coefficient: 1                   
+                };
+
+                var t = transaction.send(TRANSACTION_URL, dataParam, keyPair.secretKey);
             }
         }
     }
