@@ -40,7 +40,7 @@ where
     }
 
     /// Returns history of the pipe type with the given public key.
-    pub fn queues_history(&self, public_key: &PublicKey) -> ProofListIndex<T, Hash> {
+    pub fn queues_attr(&self, public_key: &PublicKey) -> ProofListIndex<T, AttributesInQueue> {
         ProofListIndex::new_in_family(Queue_HISTORY_TABLE, public_key, self.view.clone())
     }
 
@@ -105,7 +105,9 @@ where
                 coefficient,
             )
         };
-        self.attributes_in_queues().put(key, attributes_in_queue);
+        let mut history = self.queues_attr(&QueueKey);
+        history.push(attributes_in_queue);
+       // self.attributes_in_queues().put(key, attributes_in_queue);
     }
     ///method for adding attributes to queu
     pub fn add_profile (

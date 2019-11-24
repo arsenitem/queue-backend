@@ -160,8 +160,7 @@ impl Transaction for CreateQueue {
 }
 impl Transaction for AddAttributesToQueue {
     fn execute(&self, context: TransactionContext) -> ExecutionResult {
-        
-    
+         
         let mut schema = Schema::new(context.fork());
 
         let key = &context.author();
@@ -190,8 +189,7 @@ impl Transaction for AddAttributesToQueue {
             Ok(())
         } else {
             Err(Error::ParticipantAlreadyExists)?
-        }
-     
+        }  
     }
 }
 // impl Transaction for CreateProfile {
