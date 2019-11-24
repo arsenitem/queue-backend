@@ -2,6 +2,8 @@
 use crate::queue::Queue;
 use crate::queue_attributes::AttributesInQueue;
 use crate::user::User;
+use crate::profile::Profile;
+use crate::profile_attribute_value::ProfileAttributeValue;
 use exonum::crypto::{Hash, PublicKey};
 use exonum_merkledb::{IndexAccess, ObjectHash, ProofListIndex, ProofMapIndex};
 use std::cmp::Ordering;
@@ -14,6 +16,10 @@ pub const Queue_HISTORY_TABLE: &str = "queue_constructor.queue.history";
 pub const Queues_attribues_TYPES_TABLE: &str = "queue_attributes_constructor.queue";
 ///
 pub const Users_TABLE: &str = "queue_users";
+///
+pub const Profiles_TABLE: &str = "queue_users";
+///
+pub const Profiles_attributes_TABLE: &str = "queue_users_atrs";
 /// Database schema.
 #[derive(Debug)]
 pub struct Schema<T> {
@@ -64,6 +70,18 @@ where
     pub fn user(&self, pub_key: &PublicKey) -> Option<User> {
         self.users().get(pub_key)     
     }
+    ///
+    pub fn profiles(&self) -> ProofMapIndex<T, PublicKey, Profile> {
+        ProofMapIndex::new(Profiles_TABLE, self.view.clone())     
+    }
+    ///
+    pub fn profile(&self, pub_key: &PublicKey) -> Option<Profile> {
+        self.profiles().get(pub_key)  
+    }
+    ///
+    pub fn profiles_attributes(&self) -> ProofMapIndex<T, PublicKey, ProfileAttributeValue> {
+        ProofMapIndex::new(Profiles_attributes_TABLE, self.view.clone())     
+    }
      /// Create new Queue and append first record to its history.
     pub fn add_queue(
         &mut self,
@@ -105,36 +123,44 @@ where
                 coefficient,
             )
         };
-        let mut history = self.queues_attr(&QueueKey);
-        history.push(attributes_in_queue);
-       // self.attributes_in_queues().put(key, attributes_in_queue);
+        // let mut history = self.queues_attr(&QueueKey);
+        // history.push(attributes_in_queue);
+        self.attributes_in_queues().put(key, attributes_in_queue);
     }
     ///method for adding attributes to queu
-    pub fn add_profile (
+    pub fn create_profile (
         &mut self,
-        key: &PublicKey,
-        QueueKey: PublicKey,
-        name: String,
-        typeAttribute:String,
-        order:String,
-        sortable:u64,
-        obligatory:u32,
-        priorityInOrder:bool,
-        coefficient:u64,
+        key: &PublicKey,       
+        user_key: PublicKey,
+        queue_key: PublicKey,      
+        rating: u64,
     )  {
-        let attributes_in_queue = {
-            AttributesInQueue:: new(
-                key,
-                QueueKey,
-                &name,
-                &typeAttribute,
-                &order,
-                sortable,
-                obligatory,
-                priorityInOrder,
-                coefficient,
+        let profile = {
+            Profile:: new(
+                key,       
+                user_key,
+                queue_key,      
+                rating,
             )
         };
-        self.attributes_in_queues().put(key, attributes_in_queue);
+        self.profiles().put(key, profile);
+    }
+    ///
+    pub fn set_profile_attribute (
+        &mut self,
+        key: &PublicKey,       
+        attribute_key: PublicKey,
+        profile_key: PublicKey,      
+        value: &String,
+    ) {
+        let profileValue = {
+            ProfileAttributeValue:: new(
+                key,       
+                attribute_key,
+                profile_key,      
+                &value,
+            )
+        };
+        self.profiles_attributes().put(key, profileValue);
     }
 }

@@ -10,9 +10,10 @@ use exonum_testkit::{ApiKind, TestKit, TestKitApi, TestKitBuilder};
 
 // Import data types used in tests from the crate where the service is defined.
 use queue_constructor::{
-    api::{ParticipantInfo , GetFirstQuery, ParticipantQuery},
-    query::Quert,
-    transactions::{CreateQueue},
+    api::{GetFirstQuery},
+    queue::Queue,
+    queue_attributes::AttributesInQueue,
+    transactions::{CreateQueue, AddAttributesToQueue},
     Service,
 };
 
@@ -32,6 +33,25 @@ fn test_create_wallet() {
     // assert_eq!(wallet.pub_key, tx.author());
     // assert_eq!(wallet.name, ALICE_NAME);
     // assert_eq!(wallet.balance, 100);
+}
+#[test]
+fn create_attributes() {
+    let (mut testkit, api) = create_testkit();
+    // Create and send a transaction via API
+    let (pk, _) = crypto::gen_keypair();
+    let hello = String::from("Покупка билетов на концерт");
+    let (tx, _) = api.create_queue(&pk, hello);
+    testkit.create_block();
+    api.assert_tx_status(tx.hash(), &json!({ "type": "success" }));
+    let (pk2, _) = crypto::gen_keypair();
+    let hello1 = String::from("Покупка билетов на концерт");
+    let hello2 = String::from("Покупка билетов на концерт");
+    let hello3 = String::from("Покупка билетов на концерт");
+    let (tx2, _) = api.create_queue_attrs(pk, hello1, hello2, hello3, 5, 4, false, 5);
+    testkit.create_block();
+    api.assert_tx_status(tx2.hash(), &json!({ "type": "success" }));
+    // let vec = api.get_queue_attrs(&pk);
+
 }
 /// Wrapper for the cryptocurrency service API allowing to easily use it
 /// (compared to `TestKitApi` calls).
@@ -66,7 +86,7 @@ impl ParticipantsApi {
     fn create_queue(&self,pk: &PublicKey, name: String) -> (Signed<RawTransaction>, SecretKey) {
         let (pubkey, key) = crypto::gen_keypair();
         // Create a pre-signed transaction
-        let tx = CreateQueue::sign(&pubkey,pk,name,&key);
+        let tx = CreateQueue::sign(&pubkey,name,&key);
 
         let data = messages::to_hex_string(&tx);
         let tx_info: TransactionResponse = self
@@ -78,6 +98,40 @@ impl ParticipantsApi {
         assert_eq!(tx_info.tx_hash, tx.hash());
         (tx, key)
     }
+    fn create_queue_attrs(&self,
+        QueueKey: PublicKey,
+        name: String,
+        typeAttribute:String,
+        order:String,
+        sortable:u64,
+        obligatory:u32,
+        priorityInOrder:bool,
+        coefficient:u64,) -> (Signed<RawTransaction>, SecretKey) {
+        let (pubkey, key) = crypto::gen_keypair();
+        // Create a pre-signed transaction
+        let tx = AddAttributesToQueue::sign(&pubkey,QueueKey,name,typeAttribute, order, sortable, obligatory, priorityInOrder, coefficient,&key);
+
+        let data = messages::to_hex_string(&tx);
+        let tx_info: TransactionResponse = self
+            .inner
+            .public(ApiKind::Explorer)
+            .query(&json!({ "tx_body": data }))
+            .post("v1/transactions")
+            .unwrap();
+        assert_eq!(tx_info.tx_hash, tx.hash());
+        (tx, key)
+    }
+    // fn get_queue_attrs(&self, pub_key: PublicKey) -> <Vec<AttributesInQueue>> {
+    //     let first_key = self
+    //         .inner
+    //         .public(ApiKind::Service("iphone_queue"))
+    //         .query(&GetFirstQuery {pub_key})
+    //         .get::<Vec<AttributesInQueue>>("v1/queue_constructor/get_queue_properties")
+    //         .unwrap();
+            
+    //     println!("{:?}", first_key);
+    //     first_key
+    // }
 }
 
 /// Creates a testkit together with the API wrapper defined above.

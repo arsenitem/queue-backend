@@ -31,6 +31,8 @@ pub mod transactions;
 pub mod queue_attributes;
 /// user profiles
 pub mod profile;
+///
+pub mod profile_attribute_value;
 
 ///users
 pub mod user;

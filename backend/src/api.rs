@@ -44,6 +44,7 @@ impl PublicApi {
         // }
         let transactions = history
         .iter()
+        .filter(|x| x.QueueKey == query.pub_key)
         .collect::<Vec<_>>();
 
         // Ok(first.values().count())

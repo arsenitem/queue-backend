@@ -78,17 +78,28 @@ pub struct AddAttributesToQueue {
     ///
     pub coefficient: u64,
 }
-// ///struct
-// #[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
-// #[exonum(pb = "proto::CreateProfile")]
-// pub struct CreateProfile {
-//     ///
-//     pub user_key: PublicKey,
-//     ///
-//     pub queue_key: PublicKey,
-//     ///
-//     pub rating: u64,
-// }
+///struct
+#[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
+#[exonum(pb = "proto::CreateProfile")]
+pub struct CreateProfile {
+    ///
+    pub user_key: PublicKey,
+    ///
+    pub queue_key: PublicKey,
+    ///
+    pub rating: u64,
+}
+///struct
+#[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
+#[exonum(pb = "proto::SetProfileAttributeValue")]
+pub struct SetProfileAttributeValue {
+    ///
+    pub attribute_key: PublicKey,
+    ///
+    pub profile_key: PublicKey,
+    ///
+    pub value: String,
+}
 /// Transaction group.
 #[derive(Serialize, Deserialize, Clone, Debug, TransactionSet)]
 pub enum ParticipantTransactions {
@@ -96,6 +107,10 @@ pub enum ParticipantTransactions {
      CreateQueue(CreateQueue),
     ///
      AddAttributesToQueue(AddAttributesToQueue),
+     ///
+     CreateProfile(CreateProfile),
+    ///
+     SetProfileAttributeValue(SetProfileAttributeValue),
 }
 ///
 impl AddAttributesToQueue {
@@ -126,18 +141,30 @@ impl CreateQueue {
         Message::sign_transaction(Self { name }, SERVICE_ID, *pk, sk)
     }
 }
-// impl CreateProfile {
-//     #[doc(hidden)]
-//     pub fn sign(
-//         pk: &PublicKey,       
-//         user_key: PublicKey,
-//         queue_key: PublicKey,
-//         rating: u64,
-//         sk: &SecretKey,
-//     ) -> Signed<RawTransaction> {
-//         Message::sign_transaction(Self { user_key, queue_key, rating }, SERVICE_ID, *pk, sk)
-//     }
-// }
+impl CreateProfile {
+    #[doc(hidden)]
+    pub fn sign(
+        pk: &PublicKey,       
+        user_key: PublicKey,
+        queue_key: PublicKey,      
+        rating: u64,
+        sk: &SecretKey,
+    ) -> Signed<RawTransaction> {
+        Message::sign_transaction(Self { user_key, queue_key, rating }, SERVICE_ID, *pk, sk)
+    }
+}
+impl SetProfileAttributeValue {
+    #[doc(hidden)]
+    pub fn sign(
+        pk: &PublicKey,       
+        attribute_key: PublicKey,
+        profile_key: PublicKey,      
+        value: String,
+        sk: &SecretKey,
+    ) -> Signed<RawTransaction> {
+        Message::sign_transaction(Self { attribute_key, profile_key, value }, SERVICE_ID, *pk, sk)
+    }
+}
 impl Transaction for CreateQueue {
     fn execute(&self, context: TransactionContext) -> ExecutionResult {
         
@@ -165,7 +192,6 @@ impl Transaction for AddAttributesToQueue {
 
         let key = &context.author();
 
-        if !schema.queue(key).is_none() {
             let QueueKey = self.QueueKey;
             let name = &self.name;
             let typeAttribute = &self.typeAttribute;
@@ -185,20 +211,46 @@ impl Transaction for AddAttributesToQueue {
                 priorityInOrder,
                 coefficient
             );
-
             Ok(())
-        } else {
-            Err(Error::ParticipantAlreadyExists)?
-        }  
     }
 }
-// impl Transaction for CreateProfile {
-//     fn execute(&self, context: TransactionContext) -> ExecutionResult {
+impl Transaction for CreateProfile {
+    fn execute(&self, context: TransactionContext) -> ExecutionResult {
         
     
-//       ////
-//             Ok(())
-      
-     
-//     }
-// }
+        let mut schema = Schema::new(context.fork());
+
+        let key = &context.author();
+
+        let user_key = self.user_key;
+        let queue_key = self.queue_key; 
+        let rating = self.rating;
+        schema.create_profile(
+            key,
+            user_key,
+            queue_key,      
+            rating,
+        );
+        Ok(())
+    }
+}
+impl Transaction for SetProfileAttributeValue {
+    fn execute(&self, context: TransactionContext) -> ExecutionResult {
+        
+    
+        let mut schema = Schema::new(context.fork());
+
+        let key = &context.author();
+
+        let attribute_key = self.attribute_key;
+        let profile_key = self.profile_key; 
+        let value = &self.value;
+        schema.set_profile_attribute(
+            key,
+            attribute_key,
+            profile_key,      
+            value,
+        );
+        Ok(())
+    }
+}
