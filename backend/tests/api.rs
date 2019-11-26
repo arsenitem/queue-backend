@@ -54,8 +54,10 @@ fn create_attributes() {
     let hello11 = String::from("Покупка билетов на концерт");
     let hello22 = String::from("Покупка билетов на концерт");
     let hello33 = String::from("Покупка билетов на концерт");
+    let (pk3, _) = crypto::gen_keypair();
     let (tx2, _) = api.create_queue_attrs(pk, hello1, hello2, hello3, 5, 4, false, 5);
-    let (tx3, _) = api.create_queue_attrs(pk, hello11, hello22, hello33, 5, 5, true, 6);
+    testkit.create_block();
+    let (tx3, _) = api.create_queue_attrs(pk3, hello11, hello22, hello33, 5, 5, true, 6);
     testkit.create_block();
     let vec = api.get_queue_attrs(pk);
     api.assert_tx_status(tx2.hash(), &json!({ "type": "success" }));
