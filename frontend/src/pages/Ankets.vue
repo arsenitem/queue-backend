@@ -46,7 +46,7 @@ module.exports = {
                 $("#profileTable tbody").html("");
                 value.data.forEach(function(value){
                     // Здесь разбираются данные анкеты
-                    let key = Exonum.uint8ArrayToHexadecimal(new Uint8Array(value.key.data)),
+                    let key = Exonum.uint8ArrayToHexadecimal(new Uint8Array(value.key.data));
                     // Создаем строку в таблице
                     $("#profileTable tbody").append("<tr><td></td><td>"+key+"</td><td></td></tr>");
                 });
