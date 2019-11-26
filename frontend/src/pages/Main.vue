@@ -14,7 +14,7 @@
                                 <th>Ключ</th>
                             </tr>
                         </thead>               
-                        <tbody>
+                        <tbody v-on:click="goToAncets">
                             
                         </tbody>
                     </table>
@@ -50,6 +50,9 @@ module.exports = {
                 });
                 M.toast({html: 'Очереди возвращены'});
             });
+        },
+        goToAncets() {
+            this.$router.push('profile');
         }
     }
 }
