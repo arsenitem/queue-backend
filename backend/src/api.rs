@@ -100,5 +100,4 @@ impl PublicApi {
             .endpoint("v1/queue_constructor/get_profiles", Self::get_profiles)
             .endpoint("v1/queue_constructor/get_profile_attributes", Self::get_profile_attributes);
     }
-   
 }

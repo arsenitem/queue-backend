@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import CreateQueuePage from '../pages/CreateQueue.vue'
-import WalletPage from '../pages/Wallet.vue'
-import BlockchainPage from '../pages/Blockchain.vue'
-import BlockPage from '../pages/Block.vue'
-import TransactionPage from '../pages/Transaction.vue'
+import MainPage from '../pages/Main.vue'
+import ProfilePage from '../pages/Ankets.vue'
 
 Vue.use(Router)
 
@@ -16,14 +14,14 @@ export default new Router({
       component: CreateQueuePage
     },
     {
-      path: '/user',
-      name: 'user',
-      component: WalletPage
+      path: '/main',
+      name: 'main',
+      component: MainPage
     },
     {
-      path: '/blockchain',
-      name: 'blockchain',
-      component: BlockchainPage
+      path: '/profile',
+      name: 'profile',
+      component: ProfilePage
     },
     {
       path: '/block/:height',

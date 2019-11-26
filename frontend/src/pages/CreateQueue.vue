@@ -150,17 +150,17 @@
                                             orderShowParam = $('.parameterOrderShow[data-id='+idParameter+']'),
                                             typeParam = $('.parameterType[data-id='+idParameter+']'),
                                             objectParam = {
-                                                //queueKey: keyPairQueue.publicKey,
+                                                QueueKey: { data: Exonum.hexadecimalToUint8Array(keyPairQueue.publicKey) },
                                                 name: nameParam.val(),
-                                                /*typeAttribute: typeParam.text(),
+                                                typeAttribute: typeParam.text(),
                                                 order: orderShowParam.val(),
                                                 sortable: 0,
                                                 priorityInOrder: false,
                                                 obligatory: 0,
-                                                coefficient: Number(prioritySortParam.val())*/
+                                                coefficient: Number(prioritySortParam.val())
                                                 
                                             };
-                                            /*if (sortParam.prop("checked") == true){
+                                            if (sortParam.prop("checked") == true){
                                                 objectParam.sort = 1;
                                                 objectParam.prioritySort = prioritySortParam.val();
                                                 if (sortOrderParam.prop("checked") == true){
@@ -172,8 +172,7 @@
                                             }
                                             else if (hiddenParam.prop("checked") == true){
                                                 objectParam.hidden = 1;
-                                            }*/
-                                            debugger;
+                                            }                                           
                                             var keyPairParam = Exonum.keyPair();
                                             let transactionParam = new CreateTransactionAttr(keyPairQueue.publicKey);
 
@@ -243,19 +242,32 @@
             transactionSaveTestParameterQueue(){
                 var keyPair = Exonum.keyPair();
                 const transaction = new CreateTransactionUniversale(keyPair.publicKey, 1, proto.queue_constructor.AddAttributesToQueue);
-                let key = { data: Exonum.hexadecimalToUint8Array($("#key_queque").val()) };
+                //let key = Exonum.hexadecimalToUint8Array();
                 let dataParam = {
-                    queueKey: key,
+                    QueueKey: { data: Exonum.hexadecimalToUint8Array($("#key_queque").val()) },
                     name: "Тестовый параметр",
                     typeAttribute: "string",
-                    order: 1,
+                    order: "1",
                     sortable: 0,
-                    priorityInOrder: false,
                     obligatory: 0,
+                    priorityInOrder: false,                   
                     coefficient: 1                   
                 };
 
                 var t = transaction.send(TRANSACTION_URL, dataParam, keyPair.secretKey);
+                t.then(function(value) {
+                        $.ajax({
+                            url: 'http://127.0.0.1:8280'+TRANSACTION_URL,
+                            data: {hash: value},
+                            success: function(result){
+                                if (result.status.type == "success"){
+                                    M.toast({html: 'Параметр создан!'});
+                                }                               
+                            }
+                        });
+                    }, function(reason) {
+                    // отказ
+                });
             }
         }
     }

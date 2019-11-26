@@ -1,5 +1,5 @@
 <template>
-  <div>
+<div>
     <div class="preloader">
         <div class="preloader-wrapper big active">
             <div class="spinner-layer spinner-blue-only">
@@ -45,27 +45,16 @@
             </div>
         </li>
     </ul>
-    <ul id="dropdown1" class="dropdown-content">
-        <li><a href="#!">one</a></li>
-        <li><a href="#!">two</a></li>
-        <li class="divider"></li>
-        <li><a href="#!">three</a></li>
-    </ul>
     <nav class="main">
         <div class="nav-wrapper">
             <div class="row">
                 <div class="col s12">
                     <a href="index.html" class="brand-logo">Очередь на блокчейне</a>
                     <ul class="right hide-on-med-and-down">
-                        <li><a href="index.html">Очереди</a></li>
-                        <li><a href="#">Найти очередь</a></li>
-                        <!-- Dropdown Trigger -->
-                        <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">Dropdown<i class="material-icons right">arrow_drop_down</i></a></li>
+                        <li><a href="#/main">Очереди</a></li>
+                        <li><a href="/">Создать очередь</a></li>
+                        <li><a href="#/profile">Анкеты</a></li>                      
                     </ul>
-                </div>
-                <div class="col s12">
-                    <a href="#!" class="breadcrumb">Главная</a>
-                    <a href="#!" class="breadcrumb">Создание очереди</a>
                 </div>
             </div> 
             
