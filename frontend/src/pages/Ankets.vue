@@ -10,9 +10,9 @@
                     <table id="profileTable">
                         <thead>
                             <tr>
-                                <th>Наименование</th>
                                 <th>Ключ</th>
-                                <th>Ключ очереди</th>
+                                <th>Пользователь</th>
+                                <th>Рейтинг</th>
                             </tr>
                         </thead>               
                         <tbody>
@@ -40,18 +40,26 @@ M.AutoInit();
     const TX_WALLET_ID = 0;
     const TABLE_INDEX = 0;
 module.exports = {
-    methods: {   
+    methods: {
         getAttr(){
-            axios.get('/api/services/queue_constructor/v1/queue_constructor/get_profiles').then(function(value){
-                $("#profileTable tbody").html("");
-                value.data.forEach(function(value){
-                    // Здесь разбираются данные анкеты
-                    let key = Exonum.uint8ArrayToHexadecimal(new Uint8Array(value.key.data));
-                    // Создаем строку в таблице
-                    $("#profileTable tbody").append("<tr><td></td><td>"+key+"</td><td></td></tr>");
-                });
-                M.toast({html: 'Очереди возвращены'});
-            });
+            let example = [
+                {key:'1234556',user_key:'44444',rating: 100},
+                {key:'1234421356',user_key:'55555',rating: 99},
+                {key:'1234124555556',user_key:'441444',rating: 70},
+            ]
+            example.forEach(item=>{
+                  $("#profileTable tbody").append(`<tr><td>${item.key}</td><td>${item.user_key}</td><td>${item.rating}</td></tr>`);
+            })
+            // axios.get('/api/services/queue_constructor/v1/queue_constructor/get_profiles').then(function(value){
+            //     $("#profileTable tbody").html("");
+            //     value.data.forEach(function(value){
+            //         // Здесь разбираются данные анкеты
+            //         let key = Exonum.uint8ArrayToHexadecimal(new Uint8Array(value.key.data));
+            //         // Создаем строку в таблице
+            //         $("#profileTable tbody").append("<tr><td></td><td>"+key+"</td><td></td></tr>");
+            //     });
+            //     M.toast({html: 'Очереди возвращены'});
+            // });
         }
     }
 }
