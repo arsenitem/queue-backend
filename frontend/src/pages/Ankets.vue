@@ -43,11 +43,15 @@ module.exports = {
     methods: {
         getAttr(){
             let example = [
-                {key:'1234556',user_key:'44444',rating: 100},
-                {key:'1234421356',user_key:'55555',rating: 99},
-                {key:'1234124555556',user_key:'441444',rating: 70},
+                {key:'135225be38ea632ba2d35c572652171c644ad9963e55fae7631bb1275aa2d050',user_key:'9822d50db9b31d7ac426e4c9a4039dcccb0bfc6ae73887e7cc29ed0c4da97375',rating: 100},
+                {key:'f2e6063eab4051d202e9e2d075aeee2ca5082eacfc919f0b1e80bae1026d394f',user_key:'11154ce4f21d011ded5b88281ed943bfa213db8e2009bbc2e0cced869ca90e97',rating: 99},
+                {key:'6ecfc498feab4694bf59e871a5deba9458b2bfb2f7192792edc226720d8e94f9',user_key:'12cfc498feab4694bf59e871a5deba9458b2bfb2f7192792edc226720d8e94f9',rating: 70},
+                {key:'255225be38ea632ba2d123572652171c644ad9963e551237631bb1275aa2d050',user_key:'9822d5jfhdt31d7ac426e4c9a4039dcccb0bfc6ae73887e7cc29ed0c4da97375',rating: 65},
+                {key:'f2e6063eab40f23d202e9e2d075aeee2ca5082eacfc919f0b1e80bae1026d394f',user_key:'11154fhcg51d011ded5b88281ed943bfa213db8e2009bbc2e0cced869ca90e97',rating: 40},
+                {key:'fhr5c498feab4694bf59e871a5deba9458b2bfb2f7192792edc226720d8e94f9',user_key:'12cfc498feab4694ghdb5671a5deba9458b2bfb2f7192792edc226720d8e94f9',rating: 17},
             ]
-            example.forEach(item=>{
+            $("#profileTable tbody").empty();
+            example.forEach(item => {
                   $("#profileTable tbody").append(`<tr><td>${item.key}</td><td>${item.user_key}</td><td>${item.rating}</td></tr>`);
             })
             // axios.get('/api/services/queue_constructor/v1/queue_constructor/get_profiles').then(function(value){

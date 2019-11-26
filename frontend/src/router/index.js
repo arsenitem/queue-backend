@@ -23,17 +23,17 @@ export default new Router({
       name: 'profile',
       component: ProfilePage
     },
-    {
-      path: '/block/:height',
-      name: 'block',
-      component: BlockPage,
-      props: true
-    },
-    {
-      path: '/transaction/:hash',
-      name: 'transaction',
-      component: TransactionPage,
-      props: true
-    }
+    // {
+    //   path: '/block/:height',
+    //   name: 'block',
+    //   component: BlockPage,
+    //   props: true
+    // },
+    // {
+    //   path: '/transaction/:hash',
+    //   name: 'transaction',
+    //   component: TransactionPage,
+    //   props: true
+    // }
   ]
 })
