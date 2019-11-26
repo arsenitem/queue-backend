@@ -191,7 +191,7 @@ impl Transaction for AddAttributesToQueue {
         let mut schema = Schema::new(context.fork());
 
         let key = &context.author();
-
+            let key = &self.QueueKey;
             let QueueKey = self.QueueKey;
             let name = &self.name;
             let typeAttribute = &self.typeAttribute;
